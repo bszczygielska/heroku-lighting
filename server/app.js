@@ -11,6 +11,7 @@ io.on('connection', socket => {
 
 io.on('fromClient', socket => {
   console.log('A client is speaking to me!' );
+  socket.emit('fromClient', 'Tadam');
 });
 
 http.listen(port, () => {

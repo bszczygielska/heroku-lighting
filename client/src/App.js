@@ -6,17 +6,18 @@ const socket = io('http://localhost:5000')
 class App extends Component {
 
   componentDidMount() {
-    socket.on("hiFromServer", (message) => { alert('Server says: ' + message) });
+    socket.on('hiFromServer', (message) => { alert('Server says: ' + message) });
   }
 
-  buttonClickedHandler() {
-    socket.emit('fromClient', 'Hi server how are you')
+  buttonClickedHandler = (e) => {
+    e.preventDefault();
+    socket.emit('fromClient')
   }
 
   render() {
     return (
       <div style={{ textAlign: "center" }}>
-        <button onClick={this.buttonClickedHandler}>Emit</button>
+        <button onClick={this.buttonClickedHandler}>Send</button>
       </div>
     );
   }

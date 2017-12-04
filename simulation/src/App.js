@@ -1,28 +1,27 @@
 import React, { Component } from "react";
 import socketIOClient from "socket.io-client";
 
+const socket = socketIOClient('http://localhost:5000')
+
 class App extends Component {
   constructor() {
     super();
     this.state = {
-      response: false,
-      endpoint: 'http://localhost:5000'
+      message: '',
     };
   }
-  
+
   componentDidMount() {
-    const { endpoint } = this.state;
-    const socket = socketIOClient(endpoint);
-    socket.on("FromAPI", data => this.setState({ response: data }));
+    socket.on('fromClient', (msg) => { this.setState = ({ message: msg }) })
   }
 
   render() {
-    const { response } = this.state;
     return (
       <div style={{ textAlign: "center" }}>
-        Symulacja
+        Message from client: {this.state.message}
       </div>
     );
   }
 }
+
 export default App;
