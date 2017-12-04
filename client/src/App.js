@@ -1,29 +1,22 @@
 import React, { Component } from "react";
-import socketIOClient from "socket.io-client";
+import io from "socket.io-client";
+
+const socket = io('http://localhost:5000')
 
 class App extends Component {
-  constructor() {
-    super();
-    this.state = {
-      response: false,
-      endpoint: 'http://localhost:5000'
-    };
-  }
 
   componentDidMount() {
-    const { endpoint } = this.state;
-    const socket = socketIOClient(endpoint);
+    socket.on("hiFromServer", (message) => { alert('Server says: ' + message) });
   }
 
-  hiFromServerHandler = () => {
-    this.socket.on("hiFromServer", () => this.setState({ response: 'hejka' }));
+  buttonClickedHandler() {
+    socket.emit('fromClient', 'Hi server how are you')
   }
 
   render() {
-    const { response } = this.state;
     return (
       <div style={{ textAlign: "center" }}>
-        { response }
+        <button onClick={this.buttonClickedHandler}>Emit</button>
       </div>
     );
   }
