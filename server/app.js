@@ -6,13 +6,14 @@ const port = 5000;
 
 io.on('connection', socket => {
   console.log('a user connected, socket id: ', socket.id);
+
   socket.emit('hiFromServer', 'You are connected');
+
+  socket.on('fromClient', function(data) {
+    console.log('A client ' + socket.id + ' is speaking to me: ' + data);    
+  });
 });
 
-io.on('fromClient', socket => {
-  console.log('A client is speaking to me!' );
-  socket.emit('fromClient', 'Tadam');
-});
 
 http.listen(port, () => {
   console.log('listening on: ' + port);
