@@ -13,7 +13,7 @@ class App extends Component {
 
   buttonClickedHandler = (e) => {
     e.preventDefault();
-    socket.emit('fromClient', 'Hi server how are you')
+    socket.emit('fromClient', 'Hi simulation, seems that we are connected')
   }
 
   render() {

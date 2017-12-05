@@ -7,18 +7,21 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
-      message: '',
+      text: '',
     };
   }
 
-  componentDidMount() {
-    socket.on('fromClient', (msg) => { this.setState = ({ message: msg }) })
+  componentDidMount = () => {
+    socket.on('toSimulation', (message) => {
+      alert(message);
+      this.setState = ({ text: message })
+    })
   }
 
   render() {
     return (
       <div style={{ textAlign: "center" }}>
-        Message from client: {this.state.message}
+        Message from client: {this.state.text}
       </div>
     );
   }
