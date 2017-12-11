@@ -1,5 +1,8 @@
 import React, { Component } from "react";
 import io from "socket.io-client";
+import 'antd/dist/antd.css';
+import { Button } from 'antd';
+
 
 const socket = io('http://localhost:5000')
 
@@ -19,7 +22,7 @@ class App extends Component {
   render() {
     return (
       <div style={{ textAlign: "center" }}>
-        <button onClick={this.buttonClickedHandler}>Send</button>
+        <Button type="primary" onClick={this.buttonClickedHandler}>Send</Button>
       </div>
     );
   }
