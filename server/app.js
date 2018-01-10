@@ -9,8 +9,8 @@ io.on('connection', socket => {
 
   socket.emit('hiFromServer', 'You are connected');
 
-  socket.on('fromClient', function(data) {
-    console.log('A client ' + socket.id + ' is speaking to me!');    
+  socket.on('fromClient', data => {
+    console.log('A client ' + socket.id + ' is speaking to me!: ' + data);
     socket.emit('toSimulation', data);
   });
 });

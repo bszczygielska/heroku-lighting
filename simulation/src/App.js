@@ -1,8 +1,8 @@
 import React, { Component } from "react";
-import socketIOClient from "socket.io-client";
+import io from "socket.io-client";
 import 'antd/dist/antd.css';
 
-const socket = socketIOClient('http://localhost:5000')
+const socket = io('http://localhost:5000')
 
 class App extends Component {
   constructor() {
@@ -16,7 +16,7 @@ class App extends Component {
     socket.on('hiFromServer', socket => {
       console.log('server connected');
       
-      socket.on('toSimulation', (message) => {
+      socket.on('fromClient', message => {
         alert(message);
         this.setState = ({ text: message })
       })
