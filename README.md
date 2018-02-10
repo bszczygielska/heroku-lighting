@@ -1,5 +1,5 @@
 # lighting
 
-client npm start
-simulation npm start
-server node app.js
+<p><b>client</b> npm start</p>
+<p><b>simulation</b> npm start</p>
+<p><b>server</b> node app.js</p>
