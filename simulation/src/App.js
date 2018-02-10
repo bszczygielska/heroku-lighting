@@ -13,14 +13,10 @@ class App extends Component {
   }
 
   componentDidMount()  {
-    socket.on('hiFromServer', socket => {
-      console.log('server connected');
-      
-      socket.on('fromClient', message => {
-        alert(message);
+      socket.on('toSimulation', message => {
+        console.log(message);
         this.setState = ({ text: message })
       })
-    })
   }
 
   render() {

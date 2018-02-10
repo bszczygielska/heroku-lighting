@@ -1,10 +1,9 @@
 import React from "react";
-import {LightBulb} from './LightBulb';
 import {Button, Input, Form} from 'antd';
 
 const FormItem = Form.Item;
 
-export class Room extends React.Component {
+export class AddLightBulb extends React.Component {
 
   handleSubmit(e) {
     e.preventDefault();
@@ -17,6 +16,10 @@ export class Room extends React.Component {
 
     return (
       <Form layout="inline" onSubmit={this.handleSubmit}>
+
+        <FormItem label="Light name" >
+          <Input placeholder="lihgtName"/>
+        </FormItem>
 
         <FormItem label="Room name" >
           <Input placeholder="roomName"/>
@@ -33,4 +36,4 @@ export class Room extends React.Component {
   }
 }
 
-export default Room;
+export default AddLightBulb;

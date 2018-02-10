@@ -1,19 +1,14 @@
 export class LightBulbModel {
 
-  public label: string;
-  public group: string;
-  readonly id: number;
+    public name: string;
+    public group: string;
+    public state: boolean;
+    public r: number;
+    public g: number;
+    public b: number;
+    public s: number;
+    public p: number;
 
-  constructor(label: string, group?: string) {
-    this.id = LightBulbModel.generateId();
-    this.label = label;
-    this.group = group;
-  };
-
-  static nextId = 1;
-  static generateId() {
-    return this.nextId++;
-  }
 }
 
 export default LightBulbModel;
