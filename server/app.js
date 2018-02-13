@@ -18,13 +18,16 @@ io.on('connection', socket => {
   socket.emit('hiFromServer', 'You are connected');
 
   socket.on('fromClient', function (data) {
-    console.log('A client ' + socket.id + ' is speaking to me!: ' + data);
-    socket.emit('toSimulation', data);
+    console.log('A client ' + socket.id + ' is speaking to me!: ' + data + 'transfer to toSimulation');
+    io.emit('toSimulation', data);
+    // jak walisz do wszystkich to korzystaj z w/w const io = require...
+    // blad byl taki, ze uzylac socketa z ktorego dostalas informacje czyli klienta
   });
 });
 
-
-
+io.on('disconnect', function(data){
+  console.log('user disconnected', data);
+});
 /**
  * Connecting with db
  */

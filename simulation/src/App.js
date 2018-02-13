@@ -12,11 +12,11 @@ class App extends Component {
     };
   }
 
-  componentDidMount()  {
-      socket.on('toSimulation', message => {
-        console.log(message);
-        this.setState = ({ text: message })
-      })
+  componentWillMount()  {
+    socket.on('toSimulation', message => {
+      console.log(message);
+      this.setState({ text: message });
+    })
   }
 
   render() {

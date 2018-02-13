@@ -5,14 +5,13 @@ import 'antd/dist/antd.less';
 import {Button, Card} from 'antd';
 import {AddLightBulb} from "./components/AddLightBulb"
 
-
 const socket = io('http://localhost:5000')
 
 export class App extends Component {
 
   componentDidMount() {
     socket.on('hiFromServer', (message) => {
-      alert('Server says: ' + message);
+      console.log('Server says: ' + message);
     });
   }
 
