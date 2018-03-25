@@ -1,14 +1,15 @@
 import * as React from "react";
 import * as io from 'socket.io-client';
 import 'antd/dist/antd.less';
-
+import ClientStore from "./ClientStore";
 import {Button, Card} from 'antd';
-import { AddLightBulbForm} from "./components/AddLightBulb"
+import {AddLightBulbForm} from "./components/AddLightBulb"
 
 const socket = io('http://localhost:5000');
 
 interface IAppProps {
-    form: any
+  form: any,
+  store: ClientStore
 }
 
 export class App extends React.Component<IAppProps, any> {
