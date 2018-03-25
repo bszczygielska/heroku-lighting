@@ -2,7 +2,6 @@ const app = require('express')();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
 
-
 /**
  * Establishing io connection
  */
@@ -20,14 +19,13 @@ io.on('connection', socket => {
   socket.on('fromClient', function (data) {
     console.log('A client ' + socket.id + ' is speaking to me!: ' + data + 'transfer to toSimulation');
     io.emit('toSimulation', data);
-    // jak walisz do wszystkich to korzystaj z w/w const io = require...
-    // blad byl taki, ze uzylac socketa z ktorego dostalas informacje czyli klienta
   });
 });
 
 io.on('disconnect', function(data){
   console.log('user disconnected', data);
 });
+
 /**
  * Connecting with db
  */
@@ -85,11 +83,10 @@ lightBulbSchema.methods.speak = function() {
 
 const LightBulb = mongoose.model('LightBulb', lightBulbSchema);
 
-const bulb = new LightBulb({name: 'Brighty'});
-
-bulb.save(function(err, bulb){
-  (err) ? console.log(err) : bulb.speak();
-});
+// const bulb = new LightBulb({name: 'Brighty'});
+// bulb.save(function(err, bulb){
+//   (err) ? console.log(err) : bulb.speak();
+// });
 
 LightBulb.find(function (err, lights) {
   if (err) return console.error(err);

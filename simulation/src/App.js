@@ -1,8 +1,8 @@
 import React, { Component } from "react";
-import io from "socket.io-client";
+import * as io from 'socket.io-client';
 import 'antd/dist/antd.css';
 
-const socket = io('http://localhost:5000')
+const socket = io('http://localhost:5000');
 
 class App extends Component {
   constructor() {

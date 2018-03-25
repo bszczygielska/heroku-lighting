@@ -8,7 +8,13 @@
     "react-dom": "^16.2.0",
     "react-router": "^4.2.0",
     "react-scripts": "1.0.17",
-    "socket.io-client": "^2.0.4"
+    "socket.io-client": "^2.0.4",
+    "@types/classnames": "2.2.3",
+    "@types/node": "8.0.28",
+    "@types/node-polyglot": "0.4.30",
+    "@types/react": "16.0.2",
+    "@types/react-router": "4.0.15",
+    "@types/webpack": "3.0.10"
   },
   "scripts": {
     "start": "react-scripts start",
