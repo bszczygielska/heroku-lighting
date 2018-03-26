@@ -25,21 +25,17 @@ export default ClientStore;
 
 
 class API {
-  public apiUrl: string = 'localhost:5000';
-
-  public getHeaders() {
-    const def = {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    }
-    return def;
-  }
+  private apiUrl: string = 'localhost:5000';
+  private headers = {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json'
+  };
 
   public get(path) {
     path = `${this.apiUrl}${path}`;
     const options = {
       method: 'GET',
-      headers: this.getHeaders()
+      headers: this.headers
     };
     return fetch(path, options).then(data => data.json());
   }
@@ -48,7 +44,7 @@ class API {
     path = `${this.apiUrl}${path}`;
     const options = {
       method: 'POST',
-      headers: this.getHeaders(),
+      headers: this.headers,
       body: JSON.stringify(data)
     };
     return fetch(path, options).then(data => data.json());
