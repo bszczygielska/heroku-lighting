@@ -1,7 +1,6 @@
 import * as React from "react";
 import {Button, Input, Form} from 'antd';
-import ClientStore from "../ClientStore";
-import LightBulb from "../models/LightBulb";
+import {ClientStore} from "../ClientStore";
 
 const FormItem = Form.Item;
 
@@ -12,18 +11,13 @@ interface IAddLightBulbProps {
 
 export class AddLightBulb extends React.Component<IAddLightBulbProps, any> {
 
-  componentDidMount() {
-    this.props.form.validateFields();
-  }
-
   handleSubmit = (e) => {
-    const {store} = this.props;
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (err) {
         console.log(err.message)
       } else {
-        store.addLight(values.lightName, values.roomName)
+        this.props.store.addLight(values.lightName, values.roomName)
       }
     });
   }

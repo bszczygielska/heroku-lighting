@@ -9,7 +9,7 @@ const socket = io('http://localhost:5000');
 
 interface IAppProps {
   form: any,
-  store: ClientStore
+  store: ClientStore,
 }
 
 export class App extends React.Component<IAppProps, any> {

@@ -17,12 +17,19 @@ io.on('connection', socket => {
   socket.emit('hiFromServer', 'You are connected');
 
   socket.on('fromClient', function (data) {
-    console.log('A client ' + socket.id + ' is speaking to me!: ' + data + 'transfer to toSimulation');
+    console.log('A client ' + socket.id + ' is speaking to me!: ' + data);
     io.emit('toSimulation', data);
   });
+
+  socket.on('createLight', function (data) {
+    const bulb = new LightBulb({name: 'Brighty'});
+    bulb.save(function (err, bulb) {
+      (err) ? console.log(err) : bulb.speak();
+    });
+  })
 });
 
-io.on('disconnect', function(data){
+io.on('disconnect', function (data) {
   console.log('user disconnected', data);
 });
 
@@ -38,6 +45,9 @@ db.once('open', function () {
   console.log('mongoose connected!!')
 });
 
+/**
+ * Data schema
+ */
 const lightBulbSchema = mongoose.Schema({
   name: {
     type: String,
@@ -77,18 +87,43 @@ const lightBulbSchema = mongoose.Schema({
   },
 });
 
-lightBulbSchema.methods.speak = function() {
+lightBulbSchema.methods.speak = function () {
   console.log(`Hi Im your new light bulb ${this.name}, shall I lighten?`)
 };
 
 const LightBulb = mongoose.model('LightBulb', lightBulbSchema);
 
-// const bulb = new LightBulb({name: 'Brighty'});
-// bulb.save(function(err, bulb){
-//   (err) ? console.log(err) : bulb.speak();
-// });
+/**
+ *  Routes
+ */
+app.get('/', function (req, res) {
+  res.json({message: 'hooray! welcome to our api!'});
+});
+
+app.get('/addLight', function (req, res) {
+  let bulb = new LightBulb(req.body);
+  try {
+    bulb.save(function (err, bulb) {
+      (err) ? console.log(err) : bulb.speak();
+    });
+    res.json({message: 'light created successfully'});
+  } catch (err) {
+    console.log(err.message);
+    res.json({message: err.message})
+  }
+});
+
+app.get('/lights', function (req, res) {
+  res.json(LightBulb.find(function (err, lights) {
+    if (err) return console.error(err);
+    console.log(lights);
+  }))
+});
+
 
 LightBulb.find(function (err, lights) {
   if (err) return console.error(err);
   console.log(lights);
 });
+
+
