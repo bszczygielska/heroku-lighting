@@ -1,7 +1,10 @@
-import LightBulb from "./models/LightBulb";
+import LightBulb from "../models/LightBulb";
+import {observable} from "mobx";
 
 export class ClientStore {
   public api: API;
+
+  @observable
   public lightBulbs: LightBulb[] = [];
 
   public addLight(lightName: string, roomName: string) {
@@ -14,8 +17,8 @@ export class ClientStore {
     }
   }
 
-  public fetchLights() {
-    this.api.get('/lights')
+  public async fetchLights() {
+    await this.api.get('/lights')
       .then((lights) => this.lightBulbs = lights)
   }
 

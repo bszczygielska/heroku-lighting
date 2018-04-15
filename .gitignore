@@ -1,2 +1,5 @@
 .idea/
+**/workspace
+
+.idea/
 **/node_modules/

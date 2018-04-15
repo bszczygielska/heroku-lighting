@@ -1,0 +1,45 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es5",
+    "noImplicitAny": false,
+    "moduleResolution": "node",
+    "experimentalDecorators": true,
+    "jsx": "react",
+    "sourceMap": true,
+    "inlineSourceMap": false,
+    "inlineSources": true,
+    "preserveConstEnums": true,
+    "allowSyntheticDefaultImports": true,
+    "lib": [
+      "dom",
+      "es2015",
+      "es2015.generator",
+      "es2015.promise"
+    ],
+    "types": [
+      "@types/base16",
+      "@types/classnames",
+      "@types/jquery",
+      "@types/mocha",
+      "@types/mustache",
+      "@types/nunjucks",
+      "@types/react",
+      "@types/react-helmet",
+      "@types/react-router",
+      "@types/source-map",
+      "@types/uglify-js",
+      "@types/uuid",
+      "@types/webpack"
+    ]
+  },
+  "include": [
+    "./src/**/*.ts",
+    "./src/**/*.tsx"
+  ],
+  "exclude": [
+    "node_modules"
+  ],
+  "buildOnSave": false,
+  "compileOnSave": false
+}

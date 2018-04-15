@@ -1,9 +1,11 @@
 import * as React from "react";
 import * as io from 'socket.io-client';
 import 'antd/dist/antd.less';
-import ClientStore from "./ClientStore";
+import ClientStore from "../../stores/ClientStore";
 import {Button, Card} from 'antd';
-import {AddLightBulbForm} from "./components/AddLightBulb"
+import {AddLightBulbForm} from "./AddLightBulb"
+import {LightBulbsTable} from "./LightBulbsTable"
+import {observer} from "mobx-react";
 
 const socket = io('http://localhost:5000');
 
@@ -12,7 +14,13 @@ interface IAppProps {
   store: ClientStore,
 }
 
-export class App extends React.Component<IAppProps, any> {
+@observer
+export class Dashboard extends React.Component<IAppProps, any> {
+
+
+  componentWillMount(){
+    this.props.store.fetchLights();
+  }
 
   componentDidMount() {
     socket.on('hiFromServer', (message) => {
@@ -34,8 +42,9 @@ export class App extends React.Component<IAppProps, any> {
           </Card>
         </div>
         <div style={{padding: '30px'}}>
-          <Card title="Add light bulb" bordered={false}>
+          <Card title="Here you can manage your lights" bordered={false}>
             <AddLightBulbForm {...this.props} />
+            <LightBulbsTable {...this.props}/>
           </Card>
         </div>
       </div>
@@ -43,4 +52,4 @@ export class App extends React.Component<IAppProps, any> {
   }
 }
 
-export default App;
+export default Dashboard;

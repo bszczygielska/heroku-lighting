@@ -1,6 +1,7 @@
 import * as React from "react";
 import {Button, Input, Form} from 'antd';
-import {ClientStore} from "../ClientStore";
+import {ClientStore} from "../../stores/ClientStore";
+import {observer} from "mobx-react";
 
 const FormItem = Form.Item;
 
@@ -9,7 +10,8 @@ interface IAddLightBulbProps {
   store: ClientStore;
 }
 
-export class AddLightBulb extends React.Component<IAddLightBulbProps, any> {
+@observer
+class AddLightBulb extends React.Component<IAddLightBulbProps, any> {
 
   handleSubmit = (e) => {
     e.preventDefault();
