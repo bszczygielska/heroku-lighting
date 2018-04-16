@@ -2,7 +2,7 @@ import {observable} from "mobx";
 
 export class LightBulb {
 
-  constructor(name, group) {
+  constructor(name: any, group: any) {
     this.name = name;
     this.group = group;
   }

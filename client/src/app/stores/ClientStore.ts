@@ -34,7 +34,7 @@ class API {
     'Content-Type': 'application/json'
   };
 
-  public get(path) {
+  public get(path: any) {
     path = `${this.apiUrl}${path}`;
     const options = {
       method: 'GET',
@@ -43,7 +43,7 @@ class API {
     return fetch(path, options).then(data => data.json());
   }
 
-  public post(path, data) {
+  public post(path: any, data: any) {
     path = `${this.apiUrl}${path}`;
     const options = {
       method: 'POST',

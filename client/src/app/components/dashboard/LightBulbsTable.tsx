@@ -22,13 +22,16 @@ export class LightBulbsTable extends React.Component<ILightsTableProps, any> {
 
   }
 
+
   render() {
+    //const dummySource = [new LightBulb('dummy', 'light')]
+
     return (
       <List
         header={<div>Manage your light bulbs</div>}
         bordered
-        dataSource={this.props.store.lightBulbs || new LightBulb('dummy', 'light')}
-        renderItem={item => (
+        dataSource={[new LightBulb('dummy', 'light')]}
+        renderItem={(item: any) => (
           <List.Item actions={[
             <Icon type="edit" onClick={this.onEditHandler}/>,
             <Icon type="close-circle-o" onClick={this.onDeleteHandler}/>

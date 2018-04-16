@@ -13,9 +13,9 @@ interface IAddLightBulbProps {
 @observer
 class AddLightBulb extends React.Component<IAddLightBulbProps, any> {
 
-  handleSubmit = (e) => {
+  private handleSubmit = (e: React.MouseEvent<HTMLInputElement>) => {
     e.preventDefault();
-    this.props.form.validateFields((err, values) => {
+    this.props.form.validateFields((err: any, values: any) => {
       if (err) {
         console.log(err.message)
       } else {
