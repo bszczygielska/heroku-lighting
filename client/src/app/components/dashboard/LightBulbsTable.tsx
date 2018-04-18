@@ -7,7 +7,7 @@ import ClientStore from "../../stores/ClientStore";
 
 interface ILightsTableProps {
   form: any;
-  store: ClientStore;
+  clientStore: ClientStore;
 }
 
 @observer
@@ -24,13 +24,13 @@ export class LightBulbsTable extends React.Component<ILightsTableProps, any> {
 
 
   render() {
-    //const dummySource = [new LightBulb('dummy', 'light')]
+    const dummySource = [new LightBulb('dummy', 'light')]
 
     return (
       <List
         header={<div>Manage your light bulbs</div>}
         bordered
-        dataSource={[new LightBulb('dummy', 'light')]}
+        dataSource={this.props.clientStore.lightBulbs || dummySource}
         renderItem={(item: any) => (
           <List.Item actions={[
             <Icon type="edit" onClick={this.onEditHandler}/>,

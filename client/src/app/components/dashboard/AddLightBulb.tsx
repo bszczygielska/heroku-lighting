@@ -7,7 +7,7 @@ const FormItem = Form.Item;
 
 interface IAddLightBulbProps {
   form: any;
-  store: ClientStore;
+  clientStore: ClientStore;
 }
 
 @observer
@@ -19,7 +19,7 @@ class AddLightBulb extends React.Component<IAddLightBulbProps, any> {
       if (err) {
         console.log(err.message)
       } else {
-        this.props.store.addLight(values.lightName, values.roomName)
+        this.props.clientStore.addLight(values.lightName, values.roomName)
       }
     });
   }

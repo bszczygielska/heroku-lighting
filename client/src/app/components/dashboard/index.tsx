@@ -5,15 +5,16 @@ import ClientStore from '../../stores/ClientStore';
 import { Button, Card } from 'antd';
 import { AddLightBulbForm } from './AddLightBulb'
 import { LightBulbsTable } from './LightBulbsTable'
-import { observer } from 'mobx-react';
+import { inject, observer } from 'mobx-react';
 
 const socket = io('http://localhost:5000');
 
 interface IAppProps {
   form: any,
-  store: ClientStore,
+  clientStore: ClientStore,
 }
 
+@inject('clientStore')
 @observer
 export class Dashboard extends React.Component<IAppProps, any> {
 
