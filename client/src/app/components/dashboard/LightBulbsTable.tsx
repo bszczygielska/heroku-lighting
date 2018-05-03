@@ -1,8 +1,8 @@
 import * as React from "react";
-import {observer} from 'mobx-react';
+import { observer } from 'mobx-react';
 import List from "antd/es/list";
 import Icon from "antd/es/icon";
-import LightBulb from "../../models/LightBulb";
+import LightBulb from '../../models/LightBulb';
 import ClientStore from "../../stores/ClientStore";
 
 interface ILightsTableProps {
@@ -22,16 +22,13 @@ export class LightBulbsTable extends React.Component<ILightsTableProps, any> {
 
   }
 
-
   render() {
-    const dummySource = [new LightBulb('dummy', 'light')]
-
     return (
       <List
         header={<div>Manage your light bulbs</div>}
         bordered
-        dataSource={this.props.clientStore.lightBulbs || dummySource}
-        renderItem={(item: any) => (
+        dataSource={this.props.clientStore.lightBulbs }
+        renderItem={(light: LightBulb) => (
           <List.Item actions={[
             <Icon type="edit" onClick={this.onEditHandler}/>,
             <Icon type="close-circle-o" onClick={this.onDeleteHandler}/>
@@ -39,7 +36,7 @@ export class LightBulbsTable extends React.Component<ILightsTableProps, any> {
             <List.Item.Meta
               avatar={<Icon type="bulb"/>}
             />
-            {item.name}
+            {light.name}
           </List.Item>)}
       />
     );

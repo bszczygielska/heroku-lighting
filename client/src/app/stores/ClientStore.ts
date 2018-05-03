@@ -11,15 +11,18 @@ export class ClientStore {
   @observable
   public lightBulbs: LightBulb[] = [];
 
-  @action
   public addLight(lightName: string, roomName: string) {
-    let createdLight = new LightBulb(lightName, roomName);
-    this.lightBulbs.push(createdLight);
+    this.setValue('lightBulbs', this.lightBulbs.concat(new LightBulb(lightName, roomName)));
     //try {
     //  this.api.post('/addLight', createdLight)
     //} catch (e) {
     //  console.log(e.message)
     //}
+  }
+
+  @action
+  setValue(key: string, value: any) {
+    this[key] = value;
   }
 
   public async fetchLights() {

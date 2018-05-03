@@ -1,7 +1,7 @@
 import * as React from "react";
 import {Button, Input, Form} from 'antd';
 import {ClientStore} from "../../stores/ClientStore";
-import {observer} from "mobx-react";
+import { observer } from 'mobx-react';
 
 const FormItem = Form.Item;
 
@@ -19,14 +19,18 @@ class AddLightBulb extends React.Component<IAddLightBulbProps, any> {
       if (err) {
         console.log(err.message)
       } else {
+        console.log('robie bulba ', values.lightName, values.roomName)
         this.props.clientStore.addLight(values.lightName, values.roomName)
+        //let newBulbList = this.props.clientStore.lightBulbs.concat( new LightBulb(values.lightName, values.roomName))
+        //this.props.clientStore.setValue('lightBulbs', newBulbList);
       }
     });
   }
 
+
+
   render() {
     const {getFieldDecorator} = this.props.form;
-
     return (
       <Form layout="inline" onSubmit={this.handleSubmit}>
 
