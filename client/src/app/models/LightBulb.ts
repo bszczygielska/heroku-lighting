@@ -3,11 +3,9 @@ import {observable} from "mobx";
 export class LightBulb {
 
   constructor(name: any, group: any) {
-    this.name = name;
-    this.group = group;
+    this.group = `${group}:${name}`;
   }
 
-  @observable public name: string;
   @observable public group: string;
   @observable public state: boolean;
   @observable public r: number;

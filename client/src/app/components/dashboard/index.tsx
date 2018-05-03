@@ -42,9 +42,10 @@ export class Dashboard extends React.Component<IAppProps, any> {
           </Card>
         </div>
         <div style={ { padding: '30px' } }>
-          <Card title="Add light bulb" bordered={ false }>
+          {this.props.clientStore.lightBulbs.length === 0 &&
+          <Card title="Add your first light bulb in most outer room space" bordered={ false }>
             <AddLightBulbForm { ...this.props } />
-          </Card>
+          </Card>}
         </div>
         <div style={ { padding: '30px' } }>
           <LightBulbsTable { ...this.props }/>
