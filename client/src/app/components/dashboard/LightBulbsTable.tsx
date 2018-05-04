@@ -7,6 +7,7 @@ import List from 'antd/es/list';
 import Icon from 'antd/es/icon';
 import LightBulb from '../../models/LightBulb';
 import ClientStore from '../../stores/ClientStore';
+import { AddLightBulbForm } from './AddLightBulb';
 
 interface ILightsTableProps {
   form: any;
@@ -27,16 +28,17 @@ export class LightBulbsTable extends React.Component<ILightsTableProps, any> {
   }
 
   onNewRoomSpaceHandler() {
-    this.props.clientStore.setValue('showNewRoomSpaceModal', true)
+    this.props.clientStore.setValue('storedRoomName', 'sth')
   }
 
   handleOk() {
     this.props.clientStore.setValue('showNewLightModal', false)
-    console.log('asdsadas')
+    this.props.clientStore.setValue('storedRoomName', '')
   }
 
   handleCancel() {
-    this.props.clientStore.setValue('showNewRoomSpaceModal', false)
+    this.props.clientStore.setValue('showNewLightModal', false)
+    this.props.clientStore.setValue('storedRoomName', '')
   }
 
   render() {
@@ -45,32 +47,34 @@ export class LightBulbsTable extends React.Component<ILightsTableProps, any> {
 
     return (lightBulbs && lightBulbs.map((light, idx) =>
         <Card title={ light.group.split(':')[0] }
-              extra={ <Button onClick={ () => this.onNewRoomSpaceHandler() }>
-                <Icon type="plus-circle-o" />Inner room space</Button> }
+              extra={ [<Button onClick={ () => this.onNewRoomSpaceHandler() }>
+                <Icon type="plus-circle-o"/>Inner room space</Button>,
+                <Button onClick={ () => this.onNewLightHandler() }>
+                  <Icon type="plus-circle-o"/>New light</Button>] }
               key={ idx }>
 
-          <Button onClick={ () => this.onNewLightHandler() }>
-            <Icon type="plus-circle-o" />New light</Button>
-
           <Modal
-            title="showNewLightModal"
+            title="add light to this room"
             visible={ this.props.clientStore.showNewLightModal }
             onOk={ () => this.handleOk() }
-            onCancel={ () => this.handleCancel() }
-          />
+            onCancel={ () => this.handleCancel() }>
+            <AddLightBulbForm noRoom={ true }{ ...this.props }/>
+          </Modal>
 
           <Modal
             title="showNewRoomSpaceModal"
-            visible={ this.props.clientStore.showNewRoomSpaceModal }
+            visible={ this.props.clientStore.storedRoomName !== '' }
             onOk={ () => this.handleOk() }
-            onCancel={ () => this.handleCancel() }
-          />
+            onCancel={ () => this.handleCancel() }>
+            <AddLightBulbForm { ...this.props } />
+          </Modal>
+
           <List
             dataSource={ lightBulbs }
             renderItem={ (light: LightBulb) => (
               <List.Item actions={ [
-                <Icon type="edit" onClick={ this.onEditHandler }/>,
-                <Icon type="close-circle-o" onClick={ this.onDeleteHandler }/>,
+                <Icon type="edit" onClick={ () => this.onEditHandler() }/>,
+                <Icon type="close-circle-o" onClick={ () => this.onDeleteHandler() }/>,
               ] }>
                 <Icon type="bulb"/>
                 { light.group.split(':')[1] }

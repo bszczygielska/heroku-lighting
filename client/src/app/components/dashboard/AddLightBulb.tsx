@@ -8,6 +8,7 @@ const FormItem = Form.Item;
 interface IAddLightBulbProps {
   form: any;
   clientStore: ClientStore;
+  noRoom?: boolean;
 }
 
 @observer
@@ -41,9 +42,12 @@ class AddLightBulb extends React.Component<IAddLightBulbProps, any> {
 
         <FormItem label="Room name">
           {getFieldDecorator('roomName', {
-            rules: [{required: false}],
+            initialValue: this.props.clientStore.storedRoomName,
+            rules: [{required: this.props.noRoom}],
           })(
-            <Input placeholder="Room Name"/>
+            !this.props.noRoom
+              ? <Input placeholder="Room Name"/>
+              : <Input placeholder={this.props.clientStore.storedRoomName} disabled={true}/>
           )}
         </FormItem>
 

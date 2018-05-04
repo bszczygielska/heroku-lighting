@@ -3,9 +3,17 @@ import { Layout, Menu, Icon } from 'antd';
 
 const { Header, Content, Sider, Footer } = Layout;
 
-export class Root extends React.Component {
+interface IRootProps {
+  stores: any
+}
 
-  render() {
+export class Root extends React.Component<IRootProps, any> {
+
+  onMenuItemClickHandle = (menu: any) => {
+    return this.props.stores.history.replace(menu.key);
+  }
+
+    render() {
     const { children } = this.props;
     return (
       <Layout className="layout">
@@ -14,14 +22,16 @@ export class Root extends React.Component {
           <Layout style={{ marginLeft: 200, height: '90%' }}>
             <Content style={{ margin: '24px 16px 0', overflow: 'initial'}}>
               <Sider style={{ overflow: 'auto', height: 'auto', position: 'fixed', left: 0 }}>
-                <Menu mode="inline" defaultSelectedKeys={['4']}>
+                <Menu mode="inline" defaultSelectedKeys={['/']}
+                      onClick={ (menu) => this.onMenuItemClickHandle(menu) }
+                >
 
                   <Menu.Item key="/">
                     <Icon type="user" />
                     <span className="nav-text">Configuration</span>
                   </Menu.Item>
 
-                  <Menu.Item key="/lightScenes">
+                  <Menu.Item key="/lightscenes">
                     <Icon type="bulb" />
                     <span className="nav-text">Light scenes</span>
                   </Menu.Item>
@@ -40,4 +50,4 @@ export class Root extends React.Component {
       </Layout>
     );
   }
-};
+}

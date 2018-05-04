@@ -17,6 +17,12 @@ export class ClientStore {
   @observable
   public showNewRoomSpaceModal: boolean = false;
 
+  @observable
+  public lightsToScene: LightBulb[] = [];
+
+  @observable
+  public storedRoomName: string = '';
+
   public addLight(lightName: string, roomName: string) {
     this.setValue('lightBulbs', this.lightBulbs.concat(new LightBulb(lightName, roomName)));
     //try {
@@ -24,6 +30,10 @@ export class ClientStore {
     //} catch (e) {
     //  console.log(e.message)
     //}
+  }
+
+  public onChooseLightToScene(light: LightBulb) {
+    this.setValue('lightsToScene', this.lightsToScene.concat(light))
   }
 
   @action
