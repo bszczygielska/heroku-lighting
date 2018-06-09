@@ -20,11 +20,10 @@ class AddLightBulb extends React.Component<IAddLightBulbProps, any> {
       if (err) {
         console.log(err.message)
       } else {
-        this.props.clientStore.addLight(values.lightName, values.roomName)
+        this.props.clientStore.addLight(values.lightName)
       }
     });
   }
-
 
 
   render() {

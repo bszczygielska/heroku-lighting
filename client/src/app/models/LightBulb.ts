@@ -1,18 +1,29 @@
-import {observable} from "mobx";
+import { observable } from 'mobx';
 
 export class LightBulb {
 
-  constructor(name: any, group: any) {
-    this.group = `${group}:${name}`;
+  constructor(name: string) {
+    this.name = name;
   }
 
-  @observable public group: string;
+  @observable public name: string;
   @observable public state: boolean;
   @observable public r: number;
   @observable public g: number;
   @observable public b: number;
   @observable public s: number;
   @observable public p: number;
+
+  public static defaults() {
+    return {
+      state: false,
+      r: 0,
+      g: 0,
+      b: 0,
+      s: 0,
+      p: 0,
+    };
+  }
 
 }
 

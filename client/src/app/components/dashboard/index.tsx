@@ -36,11 +36,11 @@ export class Dashboard extends React.Component<IAppProps, any> {
   render() {
     return (
       <div style={ { padding: '30px' } }>
-        <div style={ { padding: '30px' } }>
+        {false && <div style={ { padding: '30px' } }>
           <Card>
             Send message to simulation <Button type="primary" onClick={ this.buttonClickedHandler }>Send</Button>
           </Card>
-        </div>
+        </div>}
         <div style={ { padding: '30px' } }>
           {this.props.clientStore.lightBulbs.length === 0 &&
           <Card title="Add your first light bulb in most outer room space" bordered={ false }>

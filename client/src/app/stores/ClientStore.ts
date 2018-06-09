@@ -23,8 +23,8 @@ export class ClientStore {
   @observable
   public storedRoomName: string = '';
 
-  public addLight(lightName: string, roomName: string) {
-    this.setValue('lightBulbs', this.lightBulbs.concat(new LightBulb(lightName, roomName)));
+  public addLight(lightName: string) {
+    this.setValue('lightBulbs', this.lightBulbs.concat(new LightBulb(lightName)));
     //try {
     //  this.api.post('/addLight', createdLight)
     //} catch (e) {

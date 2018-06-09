@@ -46,7 +46,7 @@ export class LightBulbsTable extends React.Component<ILightsTableProps, any> {
     const { lightBulbs } = this.props.clientStore;
 
     return (lightBulbs && lightBulbs.map((light, idx) =>
-        <Card title={ light.group.split(':')[0] }
+        <Card title={ light.name.split(':')[0] }
               extra={ [<Button onClick={ () => this.onNewRoomSpaceHandler() }>
                 <Icon type="plus-circle-o"/>Inner room space</Button>,
                 <Button onClick={ () => this.onNewLightHandler() }>
@@ -77,7 +77,7 @@ export class LightBulbsTable extends React.Component<ILightsTableProps, any> {
                 <Icon type="close-circle-o" onClick={ () => this.onDeleteHandler() }/>,
               ] }>
                 <Icon type="bulb"/>
-                { light.group.split(':')[1] }
+                { light.name.split(':')[1] }
               </List.Item>) }
           />
         </Card>)
