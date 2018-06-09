@@ -42,7 +42,7 @@ export class LightScenes extends React.Component<ILightScenesProps, any> {
                 <List.Item.Meta
                   avatar={ <Icon type="bulb"/> }
                 />
-                { light.group }
+                { light.name }
               </List.Item>) }
           />
           <LightSceneEdit {...this.props}/>

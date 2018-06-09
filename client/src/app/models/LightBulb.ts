@@ -25,6 +25,11 @@ export class LightBulb {
     };
   }
 
+  get displaybleName() {
+    let nameArr = this.name.split(':');
+    return nameArr[nameArr.length-1];
+  }
+
 }
 
 export default LightBulb;

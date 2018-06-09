@@ -1,6 +1,6 @@
-import * as React from "react";
-import {Button, Input, Form} from 'antd';
-import {ClientStore} from "../../stores/ClientStore";
+import * as React from 'react';
+import { Button, Input, Form } from 'antd';
+import { ClientStore } from '../../stores/ClientStore';
 import { observer } from 'mobx-react';
 
 const FormItem = Form.Item;
@@ -8,7 +8,8 @@ const FormItem = Form.Item;
 interface IAddLightBulbProps {
   form: any;
   clientStore: ClientStore;
-  noRoom?: boolean;
+  firstLight?: boolean;
+  newRoom: boolean;
 }
 
 @observer
@@ -19,44 +20,37 @@ class AddLightBulb extends React.Component<IAddLightBulbProps, any> {
     this.props.form.validateFields((err: any, values: any) => {
       if (err) {
         console.log(err.message)
-      } else {
-        this.props.clientStore.addLight(values.lightName)
+      }
+      else {
+          this.props.newRoom
+          ? this.props.clientStore.addLightInNewRoom(values.roomName, values.lightName)
+          : this.props.clientStore.addLightInCurrentRoom(values.lightName);
       }
     });
   }
 
 
   render() {
-    const {getFieldDecorator} = this.props.form;
+    const { getFieldDecorator } = this.props.form;
     return (
-      <Form layout="inline" onSubmit={this.handleSubmit}>
 
-        <FormItem label="Light name">
-          {getFieldDecorator('lightName', {
-            rules: [{required: true, message: 'Please input light name!'}],
-          })(
-            <Input placeholder="Light Name"/>
-          )}
+      <Form layout="inline" onSubmit={ this.handleSubmit }>
+           <FormItem label="Light name">
+            { getFieldDecorator('lightName', {
+              rules: [{ required: true, message: 'Please input light name!' }],
+            })(<Input placeholder="Light Name"/>) }
+          </FormItem>
+        { this.props.newRoom && <FormItem label="Room name">
+          { getFieldDecorator('roomName', {
+            rules: [{ required: true, message: 'Please input room name!' }],
+          })(<Input placeholder="ex kitchen"/>) }
         </FormItem>
-
-        <FormItem label="Room name">
-          {getFieldDecorator('roomName', {
-            initialValue: this.props.clientStore.storedRoomName,
-            rules: [{required: this.props.noRoom}],
-          })(
-            !this.props.noRoom
-              ? <Input placeholder="Room Name"/>
-              : <Input placeholder={this.props.clientStore.storedRoomName} disabled={true}/>
-          )}
-        </FormItem>
-
+        }
         <FormItem>
           <Button type="primary"
                   htmlType="submit">Submit</Button>
         </FormItem>
-
       </Form>
-
     );
   }
 }

@@ -1,5 +1,6 @@
 import LightBulb from '../models/LightBulb';
 import { action, observable } from 'mobx';
+import * as _ from 'lodash';
 
 export class ClientStore {
   public api: API;
@@ -12,10 +13,13 @@ export class ClientStore {
   public lightBulbs: LightBulb[] = [];
 
   @observable
-  public showNewLightModal: boolean = false;
+  public projectName: string;
 
   @observable
-  public showNewRoomSpaceModal: boolean = false;
+  public forNewLight: string;
+
+  @observable
+  public forNewRoom: string;
 
   @observable
   public lightsToScene: LightBulb[] = [];
@@ -46,35 +50,109 @@ export class ClientStore {
       .then((lights) => this.lightBulbs = lights)
   }
 
-  //get lightsByGroup() {
-  //  return _.groupBy(this.lightBulbs, 'group');
-  //}
+  public addLightInNewRoom(roomName: string, lightName: string) {
+    let newName = this.combineNameForNewRoom(roomName, lightName)
+    this.addLight(newName);
+    this.setValue('forNewRoom', null)
+  }
+
+  public addLightInCurrentRoom(lightName: string) {
+    let newName = this.combineNameForNewLight(lightName);
+    this.addLight(newName);
+    this.setValue('forNewLight', null)
+  }
+
+  combineNameForNewRoom(roomName : string, lightName: string) {
+    return (this.forNewRoom === 'blank') ? `${roomName}:${lightName}` : `${this.forNewRoom}:${roomName}:${lightName}`
+  }
+
+  combineNameForNewLight(lightName: string) {
+    if (this.forNewLight === 'blank')
+      return lightName;
+    let nameArr = this.forNewLight.split(':');
+    let result = nameArr.splice(nameArr.length-1 , 1, lightName).join(':');
+    console.log('>>>', this.forNewLight, lightName, result)
+    return nameArr.splice(nameArr.length-1 , 1, lightName).join(':')
+  }
+
+  get lightsByGroup() {
+    return _.groupBy(this.lightBulbs, 'name');
+  }
+
+
+  //public response : Object = [
+  //  {
+  //    name: 'osiedle',
+  //    state: true,
+  //    r: 255,
+  //    g: 255,
+  //    b: 255,
+  //    s: 255,
+  //    p: 255,
+  //  },
+  //  {
+  //    name: 'osiedle:dom:salon',
+  //    state: true,
+  //    r: 255,
+  //    g: 255,
+  //    b: 255,
+  //    s: 255,
+  //    p: 255,
+  //  },
+  //  {
+  //    name: 'osiedle:dom:kitchen:szafka',
+  //    state: true,
+  //    r: 255,
+  //    g: 255,
+  //    b: 255,
+  //    s: 255,
+  //    p: 255,
+  //  },
+  //  {
+  //    _id: '',
+  //    name: 'osiedle:dom:kitchen:szafka',
+  //    state: true,
+  //    r: 255,
+  //    g: 255,
+  //    b: 255,
+  //    s: 255,
+  //    p: 255,
+  //  },
+  //  {
+  //    name: 'osiedle:dom:kitchen:szafka:2_polka',
+  //    state: true,
+  //    r: 255,
+  //    g: 255,
+  //    b: 255,
+  //    s: 255,
+  //    p: 255,
+  //  }
+  //]
   //
   //get sortedNamespaces() {
-  //  this.lightsByGroup.sort((a, b) => a.split(':').length - b.split(':').length);
+  //  return this.lightsByGroup.sort((a: any, b: any) => a.split(':').length - b.split(':').length);
   //}
   //
   //get lightsToView() {
   //  let schema = {};
-  //  this.sortedNamespaces.forEach((namespace) => {
-  //    let stepNamespace = [];
+  //  return this.sortedNamespaces.forEach((namespace: any) => {
   //
-  //    namespace.split(':').forEach(group => {
-  //      stepNamespace.push(group);
+  //    let stepNamespace = [] as string[];
+  //
+  //    namespace.split(':').forEach(name => {
+  //      stepNamespace.push(name);
   //      let objectPath = stepNamespace.join('.');
   //      let newNamespace = stepNamespace.join(':');
   //      let oldSchema = _.result(schema, objectPath, {});
   //      let newSchema = _.extend({
   //        namespace: newNamespace,
-  //        isNested:
-  //        lights: _.filter(response, (light) => light.group === newNamespace)
-  //    }, oldSchema)
-  //
+  //        isNested: true,
+  //        lights: _.filter(this.response, (light: any) => light.name === newNamespace)
+  //    }, oldSchema);
   //      return _.set(schema, objectPath, newSchema);
   //    })
   //  })
   //}
-
 
 }
 
