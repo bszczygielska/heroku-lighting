@@ -18,11 +18,10 @@ interface IAppProps {
 @observer
 export class Dashboard extends React.Component<IAppProps, any> {
 
-  componentWillMount() {
-    //this.props.store.fetchLights();
-  }
-
   componentDidMount() {
+
+    this.props.clientStore.fetchLights();
+
     socket.on('hiFromServer', (message: any) => {
       console.log('Server says: ' + message);
     });

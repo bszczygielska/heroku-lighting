@@ -25,7 +25,7 @@ export class LightBulb {
     };
   }
 
-  get displaybleName() {
+  get displayableName() {
     let nameArr = this.name.split(':');
     return nameArr[nameArr.length-1];
   }

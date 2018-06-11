@@ -10,10 +10,19 @@ export class ClientStore {
   }
 
   @observable
-  public lightBulbs: LightBulb[] = [];
+  public lightBulbs: LightBulb[] = [
+    new LightBulb('luzne'),
+    new LightBulb('luzne2'),
+    new LightBulb('kuchnia:okno'),
+    new LightBulb('kuchnia:sciana'),
+    new LightBulb('salon:pierwsze'),
+    new LightBulb('salon:drugie'),
+    new LightBulb('salon:trzecie'),
+    new LightBulb('salon:tv:raz'),
+    new LightBulb('salon:tv:dwa')];
 
   @observable
-  public projectName: string;
+  public projectName: string = 'Mieszkanie';
 
   @observable
   public forNewLight: string;
@@ -70,9 +79,8 @@ export class ClientStore {
     if (this.forNewLight === 'blank')
       return lightName;
     let nameArr = this.forNewLight.split(':');
-    let result = nameArr.splice(nameArr.length-1 , 1, lightName).join(':');
-    console.log('>>>', this.forNewLight, lightName, result)
-    return nameArr.splice(nameArr.length-1 , 1, lightName).join(':')
+    nameArr.splice(nameArr.length-1 , 1, lightName);
+    return nameArr.join(':');
   }
 
   get lightsByGroup() {
@@ -159,10 +167,11 @@ export class ClientStore {
 export default ClientStore;
 
 class API {
-  private apiUrl: string = 'localhost:5000';
+  private apiUrl: string = 'http://localhost:5000';
   private headers = {
     'Accept': 'application/json',
     'Content-Type': 'application/json',
+    'Access-Control-Allow-Origin': '*',
   };
 
   public get(path: string) {

@@ -53,9 +53,6 @@ const lightBulbSchema = mongoose.Schema({
     type: String,
     required: true
   },
-  group: {
-    type: String
-  },
   state: {
     type: Boolean,
     default: false

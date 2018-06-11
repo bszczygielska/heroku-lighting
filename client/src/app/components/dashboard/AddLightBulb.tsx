@@ -35,17 +35,17 @@ class AddLightBulb extends React.Component<IAddLightBulbProps, any> {
     return (
 
       <Form layout="inline" onSubmit={ this.handleSubmit }>
-           <FormItem label="Light name">
-            { getFieldDecorator('lightName', {
-              rules: [{ required: true, message: 'Please input light name!' }],
-            })(<Input placeholder="Light Name"/>) }
-          </FormItem>
         { this.props.newRoom && <FormItem label="Room name">
           { getFieldDecorator('roomName', {
             rules: [{ required: true, message: 'Please input room name!' }],
           })(<Input placeholder="ex kitchen"/>) }
         </FormItem>
         }
+        <FormItem label="Light name">
+          { getFieldDecorator('lightName', {
+            rules: [{ required: true, message: 'Please input light name!' }],
+          })(<Input placeholder="Light Name"/>) }
+        </FormItem>
         <FormItem>
           <Button type="primary"
                   htmlType="submit">Submit</Button>

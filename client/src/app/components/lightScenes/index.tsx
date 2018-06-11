@@ -4,7 +4,7 @@ import * as React from 'react';
 import 'antd/dist/antd.less';
 import LightBulb from '../../models/LightBulb';
 import ClientStore from '../../stores/ClientStore';
-import { Card } from 'antd';
+import { Card, Row, Col } from 'antd';
 import { inject, observer } from 'mobx-react';
 import LightSceneEdit from './LightSceneEdit';
 
@@ -29,24 +29,31 @@ export class LightScenes extends React.Component<ILightScenesProps, any> {
     const { lightBulbs } = clientStore;
 
     return (
-      <div style={ { padding: '30px' } }>
-        <Card title="Manage light bulb scenes" bordered={ false }>
-          <List
-            header={ <div>Choose bulbs for light scene</div> }
-            bordered
-            dataSource={ lightBulbs }
-            renderItem={ (light: LightBulb) => (
-              <List.Item actions={ [
-                <Icon type="plus-circle-o" onClick={ () => clientStore.onChooseLightToScene }/>,
-              ] }>
-                <List.Item.Meta
-                  avatar={ <Icon type="bulb"/> }
-                />
-                { light.name }
-              </List.Item>) }
-          />
-          <LightSceneEdit {...this.props}/>
+      <div style={{ padding: '30px' }}>
 
+
+        <Card title="Manage light bulb scenes" bordered={false}>
+          <Row gutter={16}>
+            <Col span={12}>
+              <List
+                header={<div>Choose bulbs for light scene</div>}
+                bordered
+                dataSource={lightBulbs}
+                pagination={{ pageSize: 10 }}
+                renderItem={(light: LightBulb) => (
+                  <List.Item actions={[
+                    <Icon type="plus-circle-o" onClick={() => clientStore.onChooseLightToScene(light)}/>,
+                  ]}>
+                    <List.Item.Meta
+                      title={light.displayableName}
+                      description={light.name}/>
+                  </List.Item>)}
+              />
+            </Col>
+            <Col span={12}>
+              <LightSceneEdit {...this.props}/>
+            </Col>
+          </Row>
         </Card>
       </div>
     );
