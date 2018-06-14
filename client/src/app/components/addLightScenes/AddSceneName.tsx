@@ -27,6 +27,7 @@ class AddSceneName extends React.Component<IAddLightBulbProps, any> {
 
   render() {
     const { getFieldDecorator } = this.props.form;
+    const {clientStore} = this.props;
     return (
       <Form layout="inline" onSubmit={ this.handleSubmit }>
           <FormItem label="Scene name">
@@ -36,6 +37,7 @@ class AddSceneName extends React.Component<IAddLightBulbProps, any> {
           </FormItem>
         <FormItem>
           <Button type="primary"
+                  disabled={clientStore.lightsToScene.length == 0 }
                   htmlType="submit">Save scene</Button>
         </FormItem>
       </Form>
