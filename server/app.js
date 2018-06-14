@@ -90,6 +90,19 @@ lightBulbSchema.methods.speak = function () {
 
 const LightBulb = mongoose.model('LightBulb', lightBulbSchema);
 
+const lightSceneSchema = mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+  },
+  lights: {
+    type: [lightBulbSchema],
+    required: true,
+  }
+});
+
+const LightScene = mongoose.model('LightScene', lightSceneSchema);
+
 /**
  *  Routes
  */
