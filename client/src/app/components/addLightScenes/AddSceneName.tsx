@@ -20,7 +20,7 @@ class AddSceneName extends React.Component<IAddLightBulbProps, any> {
         console.log(err.message)
       }
       else {
-        this.props.clientStore.setValue('sceneName', values.sceneName)
+        this.props.clientStore.addLightScene(values.sceneName);
       }
     });
   }

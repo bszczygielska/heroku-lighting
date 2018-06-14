@@ -54,7 +54,7 @@ export class LightBulbsTable extends React.Component<ILightsTableProps, any> {
                   <Icon type="plus-circle-o"/>Inner room space</Button>,
                   <Button onClick={() => this.onNewLightHandler(light.name)}>
                     <Icon type="plus-circle-o"/>New light</Button>]}
-                key={idx}>
+                key={`card_${idx}`}>
 
             {/*<List*/}
             {/*dataSource={ lightBulbs }*/}

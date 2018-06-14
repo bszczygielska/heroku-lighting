@@ -35,24 +35,21 @@ export class Dashboard extends React.Component<IAppProps, any> {
   render() {
     const { projectName } = this.props.clientStore;
     return (
-      <div style={ { padding: '30px' } }>
-        <div style={ { padding: '30px' } }>
-          { /*<Card>*/ }
-          { /*Send message to simulation <Button type="primary" onClick={ this.buttonClickedHandler }>Send</Button>*/ }
-          { /*</Card>*/ }
-          <div style={ { padding: '30px' } }>
+      <div style={{ padding: '30px' }}>
+        {/*<div style={ { padding: '30px' } }>*/}
+        {/*<Card>*/}
+        {/*Send message to simulation <Button type="primary" onClick={ this.buttonClickedHandler }>Send</Button>*/}
+        {/*</Card>*/}
 
+        {!projectName
+          ? <Card title={'Define most outer space for your project'} bordered={false}>
+            <AddProjectNameForm {...this.props}/>
+          </Card>
 
-            { !projectName
-              ? <Card title={ 'Define most outer space for your project' } bordered={ false }>
-                <AddProjectNameForm { ...this.props }/>
-              </Card>
-
-              : <Card title={ 'Now you can add lights and inner spaces to your project' } bordered={ false }>
-                <LightBulbsTable { ...this.props }/>
-              </Card>}
-          </div>
-        </div>
+          : <Card title={'Here you can add lights and inner spaces to your project'} bordered={false}>
+            <LightBulbsTable {...this.props}/>
+          </Card>}
+        {/*</div>*/}
 
       </div>
     );

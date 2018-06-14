@@ -1,6 +1,7 @@
 import LightBulb from '../models/LightBulb';
 import { action, observable } from 'mobx';
 import * as _ from 'lodash';
+import LightScene from "../models/LightScene";
 
 export class ClientStore {
   public api: API;
@@ -22,6 +23,9 @@ export class ClientStore {
     new LightBulb('salon:tv:dwa')];
 
   @observable
+  public lightScenes: LightScene[] = [];
+
+  @observable
   public projectName: string = 'Mieszkanie';
 
   @observable
@@ -34,12 +38,29 @@ export class ClientStore {
   public lightsToScene: LightBulb[] = [];
 
   @observable
+  public sceneName: string;
+
+
+  @observable
   public storedRoomName: string = '';
 
   public addLight(lightName: string) {
-    this.setValue('lightBulbs', this.lightBulbs.concat(new LightBulb(lightName)));
+    const createdLight = new LightBulb(lightName);
+    this.setValue('lightBulbs', this.lightBulbs.concat(createdLight));
     //try {
     //  this.api.post('/addLight', createdLight)
+    //} catch (e) {
+    //  console.log(e.message)
+    //}
+  }
+
+  public addLightScene(sceneName: string) {
+    const createdScene = new LightScene(sceneName, this.lightsToScene);
+    this.setValue('lightScenes', this.lightScenes.concat(createdScene));
+    this.setValue('lightsToScene', []);
+
+    //try {
+    //  this.api.post('/addLightScene', createdScene)
     //} catch (e) {
     //  console.log(e.message)
     //}
@@ -49,10 +70,6 @@ export class ClientStore {
     this.setValue('lightsToScene', this.lightsToScene.concat(light))
   }
 
-  @action
-  setValue(key: string, value: any) {
-    this[key] = value;
-  }
 
   public async fetchLights() {
     await this.api.get('/lights')
@@ -71,7 +88,7 @@ export class ClientStore {
     this.setValue('forNewLight', null)
   }
 
-  combineNameForNewRoom(roomName : string, lightName: string) {
+  combineNameForNewRoom(roomName: string, lightName: string) {
     return (this.forNewRoom === 'blank') ? `${roomName}:${lightName}` : `${this.forNewRoom}:${roomName}:${lightName}`
   }
 
@@ -79,8 +96,14 @@ export class ClientStore {
     if (this.forNewLight === 'blank')
       return lightName;
     let nameArr = this.forNewLight.split(':');
-    nameArr.splice(nameArr.length-1 , 1, lightName);
+    nameArr.splice(nameArr.length - 1, 1, lightName);
     return nameArr.join(':');
+  }
+
+
+  @action
+  setValue(key: string, value: any) {
+    this[key] = value;
   }
 
   get lightsByGroup() {

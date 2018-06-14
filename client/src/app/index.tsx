@@ -5,6 +5,7 @@ import 'antd/dist/antd.css';
 import { Router, Route, Switch, Redirect } from 'react-router';
 import { Provider } from 'mobx-react';
 import Dashboard from './components/dashboard';
+import AddLightScene from './components/addLightScenes';
 import LightScenes from './components/lightScenes';
 import { Root } from './components/root';
 import { ClientStore } from './stores/ClientStore';
@@ -25,7 +26,9 @@ ReactDOM.render(
       <Provider { ...rootStores }>
         <Switch>
           <Route exact path="/" component={ Dashboard }/>
+          <Route path="/addlightscenes" component={ AddLightScene }/>
           <Route path="/lightscenes" component={ LightScenes }/>
+          {/*<Route path="/lightsmanager" component={  }/>*/}
           <Redirect to={'/'}/>
         </Switch>
       </Provider>
