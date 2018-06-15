@@ -103,6 +103,12 @@ const lightSceneSchema = mongoose.Schema({
 
 const LightScene = mongoose.model('LightScene', lightSceneSchema);
 
+app.all('/*', function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "X-Requested-With, Content-Type, Accept");
+  next();
+});
+
 /**
  *  Routes
  */
@@ -110,13 +116,15 @@ app.get('/', function (req, res) {
   res.json({message: 'hooray! welcome to our api!'});
 });
 
-app.get('/addLight', function (req, res) {
+app.post('/addLight', function (req, res) {
   let bulb = new LightBulb(req.body);
   try {
     bulb.save(function (err, bulb) {
-      (err) ? console.log(err) : bulb.speak();
+      if (err)
+        console.log(err)
+      res.json({message: 'light created successfully'});
+      bulb.speak();
     });
-    res.json({message: 'light created successfully'});
   } catch (err) {
     console.log(err.message);
     res.json({message: err.message})
@@ -124,16 +132,8 @@ app.get('/addLight', function (req, res) {
 });
 
 app.get('/lights', function (req, res) {
-  res.json(LightBulb.find(function (err, lights) {
+  LightBulb.find(function (err, lights) {
     if (err) return console.error(err);
-    console.log(lights);
-  }))
+    res.json(lights);
+  })
 });
-
-
-LightBulb.find(function (err, lights) {
-  if (err) return console.error(err);
-  console.log(lights);
-});
-
-

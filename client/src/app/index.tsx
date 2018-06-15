@@ -7,6 +7,7 @@ import { Provider } from 'mobx-react';
 import Dashboard from './components/dashboard';
 import AddLightScene from './components/addLightScenes';
 import LightScenes from './components/lightScenes';
+import { LightManager } from './components/manager';
 import { Root } from './components/root';
 import { ClientStore } from './stores/ClientStore';
 
@@ -28,7 +29,7 @@ ReactDOM.render(
           <Route exact path="/" component={ Dashboard }/>
           <Route path="/addlightscenes" component={ AddLightScene }/>
           <Route path="/lightscenes" component={ LightScenes }/>
-          {/*<Route path="/lightsmanager" component={  }/>*/}
+          <Route path="/lightsmanager" component={ LightManager }/>
           <Redirect to={'/'}/>
         </Switch>
       </Provider>

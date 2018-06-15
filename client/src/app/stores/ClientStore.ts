@@ -1,7 +1,7 @@
 import LightBulb from '../models/LightBulb';
 import { action, observable } from 'mobx';
 import * as _ from 'lodash';
-import LightScene from "../models/LightScene";
+import LightScene from '../models/LightScene';
 
 export class ClientStore {
   public api: API;
@@ -11,16 +11,7 @@ export class ClientStore {
   }
 
   @observable
-  public lightBulbs: LightBulb[] = [
-    new LightBulb('luzne'),
-    new LightBulb('luzne2'),
-    new LightBulb('kuchnia:okno'),
-    new LightBulb('kuchnia:sciana'),
-    new LightBulb('salon:pierwsze'),
-    new LightBulb('salon:drugie'),
-    new LightBulb('salon:trzecie'),
-    new LightBulb('salon:tv:raz'),
-    new LightBulb('salon:tv:dwa')];
+  public lightBulbs: LightBulb[] = [];
 
   @observable
   public lightScenes: LightScene[] = [];
@@ -40,36 +31,39 @@ export class ClientStore {
   @observable
   public sceneName: string;
 
-
   @observable
   public storedRoomName: string = '';
 
   public addLight(lightName: string) {
     const createdLight = new LightBulb(lightName);
     this.setValue('lightBulbs', this.lightBulbs.concat(createdLight));
-    //try {
-    //  this.api.post('/addLight', createdLight)
-    //} catch (e) {
-    //  console.log(e.message)
-    //}
+    try {
+      this.api.post('/addLight', createdLight)
+    } catch (e) {
+      console.log(e.message)
+    }
   }
 
   public addLightScene(sceneName: string) {
     const createdScene = new LightScene(sceneName, this.lightsToScene);
     this.setValue('lightScenes', this.lightScenes.concat(createdScene));
-    this.setValue('lightsToScene', []);
-
-    //try {
-    //  this.api.post('/addLightScene', createdScene)
-    //} catch (e) {
-    //  console.log(e.message)
-    //}
+    try {
+      this.api.post('/addLightScene', createdScene)
+    } catch (e) {
+      console.log(e.message)
+    }
   }
 
   public onChooseLightToScene(light: LightBulb) {
-    this.setValue('lightsToScene', this.lightsToScene.concat(light))
+    if (this.lightsToScene.indexOf(light) < 0) {
+      this.setValue('lightsToScene', this.lightsToScene.concat(light))
+    }
   }
 
+  public onDeleteLightToScene(light: LightBulb) {
+    const filteredLights = this.lightsToScene.filter(l => l !== light );
+    this.setValue('lightsToScene', filteredLights);
+  }
 
   public async fetchLights() {
     await this.api.get('/lights')
@@ -93,13 +87,13 @@ export class ClientStore {
   }
 
   combineNameForNewLight(lightName: string) {
-    if (this.forNewLight === 'blank')
+    if (this.forNewLight === 'blank') {
       return lightName;
+    }
     let nameArr = this.forNewLight.split(':');
     nameArr.splice(nameArr.length - 1, 1, lightName);
     return nameArr.join(':');
   }
-
 
   @action
   setValue(key: string, value: any) {
@@ -109,7 +103,6 @@ export class ClientStore {
   get lightsByGroup() {
     return _.groupBy(this.lightBulbs, 'name');
   }
-
 
   //public response : Object = [
   //  {
@@ -193,8 +186,7 @@ class API {
   private apiUrl: string = 'http://localhost:5000';
   private headers = {
     'Accept': 'application/json',
-    'Content-Type': 'application/json',
-    'Access-Control-Allow-Origin': '*',
+    'Content-Type': 'application/json'
   };
 
   public get(path: string) {
