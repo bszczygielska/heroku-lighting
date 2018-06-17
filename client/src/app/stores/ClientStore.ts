@@ -1,6 +1,6 @@
 import LightBulb from '../models/LightBulb';
 import { action, observable } from 'mobx';
-import * as _ from 'lodash';
+import * as lodash from 'lodash';
 import LightScene from '../models/LightScene';
 
 export class ClientStore {
@@ -33,6 +33,16 @@ export class ClientStore {
 
   @observable
   public storedRoomName: string = '';
+
+  get coolObjectForRendering() {
+    let result = {};
+    let lights = this.lightBulbs;
+    lights.map( light => {
+      let name = light.name.replace(':', '.');
+      lodash.set(result, name, light);
+    });
+    return result;
+  }
 
   public addLight(lightName: string) {
     const createdLight = new LightBulb(lightName);
@@ -99,84 +109,6 @@ export class ClientStore {
   setValue(key: string, value: any) {
     this[key] = value;
   }
-
-  get lightsByGroup() {
-    return _.groupBy(this.lightBulbs, 'name');
-  }
-
-  //public response : Object = [
-  //  {
-  //    name: 'osiedle',
-  //    state: true,
-  //    r: 255,
-  //    g: 255,
-  //    b: 255,
-  //    s: 255,
-  //    p: 255,
-  //  },
-  //  {
-  //    name: 'osiedle:dom:salon',
-  //    state: true,
-  //    r: 255,
-  //    g: 255,
-  //    b: 255,
-  //    s: 255,
-  //    p: 255,
-  //  },
-  //  {
-  //    name: 'osiedle:dom:kitchen:szafka',
-  //    state: true,
-  //    r: 255,
-  //    g: 255,
-  //    b: 255,
-  //    s: 255,
-  //    p: 255,
-  //  },
-  //  {
-  //    _id: '',
-  //    name: 'osiedle:dom:kitchen:szafka',
-  //    state: true,
-  //    r: 255,
-  //    g: 255,
-  //    b: 255,
-  //    s: 255,
-  //    p: 255,
-  //  },
-  //  {
-  //    name: 'osiedle:dom:kitchen:szafka:2_polka',
-  //    state: true,
-  //    r: 255,
-  //    g: 255,
-  //    b: 255,
-  //    s: 255,
-  //    p: 255,
-  //  }
-  //]
-  //
-  //get sortedNamespaces() {
-  //  return this.lightsByGroup.sort((a: any, b: any) => a.split(':').length - b.split(':').length);
-  //}
-  //
-  //get lightsToView() {
-  //  let schema = {};
-  //  return this.sortedNamespaces.forEach((namespace: any) => {
-  //
-  //    let stepNamespace = [] as string[];
-  //
-  //    namespace.split(':').forEach(name => {
-  //      stepNamespace.push(name);
-  //      let objectPath = stepNamespace.join('.');
-  //      let newNamespace = stepNamespace.join(':');
-  //      let oldSchema = _.result(schema, objectPath, {});
-  //      let newSchema = _.extend({
-  //        namespace: newNamespace,
-  //        isNested: true,
-  //        lights: _.filter(this.response, (light: any) => light.name === newNamespace)
-  //    }, oldSchema);
-  //      return _.set(schema, objectPath, newSchema);
-  //    })
-  //  })
-  //}
 
 }
 
