@@ -17,7 +17,7 @@ export class ClientStore {
   public lightScenes: LightScene[] = [];
 
   @observable
-  public projectName: string = 'Mieszkanie';
+  public projectName: string = '';
 
   @observable
   public forNewLight: string;
@@ -36,32 +36,26 @@ export class ClientStore {
 
   get coolObjectForRendering() {
     let result = {};
-    let lights = this.lightBulbs;
-    lights.map( light => {
+    this.lightBulbs.map(light => {
       let name = light.name.replace(':', '.');
       lodash.set(result, name, light);
     });
     return result;
   }
 
-  public addLight(lightName: string) {
+  public async addLight(lightName: string) {
     const createdLight = new LightBulb(lightName);
-    this.setValue('lightBulbs', this.lightBulbs.concat(createdLight));
-    try {
-      this.api.post('/addLight', createdLight)
-    } catch (e) {
-      console.log(e.message)
-    }
+    const response = await this.api.post('/addLight', createdLight);
+    if (response)
+      this.setValue('lightBulbs', this.lightBulbs.concat(createdLight));
+
   }
 
-  public addLightScene(sceneName: string) {
+  public async addLightScene(sceneName: string) {
     const createdScene = new LightScene(sceneName, this.lightsToScene);
-    this.setValue('lightScenes', this.lightScenes.concat(createdScene));
-    try {
-      this.api.post('/addLightScene', createdScene)
-    } catch (e) {
-      console.log(e.message)
-    }
+    let response = await this.api.post('/addLightScene', createdScene);
+    if (response)
+      this.setValue('lightScenes', this.lightScenes.concat(createdScene));
   }
 
   public onChooseLightToScene(light: LightBulb) {
@@ -71,22 +65,27 @@ export class ClientStore {
   }
 
   public onDeleteLightToScene(light: LightBulb) {
-    const filteredLights = this.lightsToScene.filter(l => l !== light );
+    const filteredLights = this.lightsToScene.filter(l => l !== light);
     this.setValue('lightsToScene', filteredLights);
   }
 
+  public onDeleteLight(light: LightBulb) {
+    const filteredLights = this.lightBulbs.filter(l => l !== light);
+    this.setValue('lightBulbs', filteredLights);
+  }
+
   public async fetchLights() {
-    await this.api.get('/lights')
-      .then((lights) => this.lightBulbs = lights)
+    const response = await this.api.get('/lights');
+    this.lightBulbs = response;
   }
 
-  public addLightInNewRoom(roomName: string, lightName: string) {
-    let newName = this.combineNameForNewRoom(roomName, lightName)
+  public onNewRoomLight(roomName: string, lightName: string) {
+    let newName = this.combineNameForNewRoom(roomName, lightName);
     this.addLight(newName);
-    this.setValue('forNewRoom', null)
+    this.setValue('forNewRoom', null);
   }
 
-  public addLightInCurrentRoom(lightName: string) {
+  public onNewLight(lightName: string) {
     let newName = this.combineNameForNewLight(lightName);
     this.addLight(newName);
     this.setValue('forNewLight', null)
@@ -121,13 +120,13 @@ class API {
     'Content-Type': 'application/json'
   };
 
-  public get(path: string) {
+  public async get(path: string) {
     path = `${this.apiUrl}${path}`;
     const options = {
       method: 'GET',
       headers: this.headers,
     };
-    return fetch(path, options as RequestInit).then(data => data.json());
+    return await fetch(path, options as RequestInit).then(data => data.json());
   }
 
   public async post(path: any, data: any) {
@@ -137,6 +136,6 @@ class API {
       headers: this.headers,
       body: JSON.stringify(data),
     };
-    return fetch(path, options as RequestInit).then(data => data.json());
+    return await fetch(path, options as RequestInit).then(data => data.json());
   }
 }

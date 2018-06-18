@@ -23,12 +23,11 @@ class AddLightBulb extends React.Component<IAddLightBulbProps, any> {
       }
       else {
           this.props.newRoom
-          ? this.props.clientStore.addLightInNewRoom(values.roomName, values.lightName)
-          : this.props.clientStore.addLightInCurrentRoom(values.lightName);
+          ? this.props.clientStore.onNewRoomLight(values.roomName, values.lightName)
+          : this.props.clientStore.onNewLight(values.lightName);
       }
     });
-  }
-
+  };
 
   render() {
     const { getFieldDecorator } = this.props.form;

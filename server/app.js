@@ -11,27 +11,27 @@ http.listen(port, () => {
   console.log('io server listening on: ' + port);
 });
 
-io.on('connection', socket => {
-  console.log('a user connected, socket id: ', socket.id);
-
-  socket.emit('hiFromServer', 'You are connected');
-
-  socket.on('fromClient', function (data) {
-    console.log('A client ' + socket.id + ' is speaking to me!: ' + data);
-    io.emit('toSimulation', data);
-  });
-
-  socket.on('createLight', function (data) {
-    const bulb = new LightBulb({name: 'Brighty'});
-    bulb.save(function (err, bulb) {
-      (err) ? console.log(err) : bulb.speak();
-    });
-  })
-});
-
-io.on('disconnect', function (data) {
-  console.log('user disconnected', data);
-});
+// io.on('connection', socket => {
+//   console.log('a user connected, socket id: ', socket.id);
+//
+//   socket.emit('hiFromServer', 'You are connected');
+//
+//   socket.on('fromClient', function (data) {
+//     console.log('A client ' + socket.id + ' is speaking to me!: ' + data);
+//     io.emit('toSimulation', data);
+//   });
+//
+//   socket.on('createLight', function (data) {
+//     const bulb = new LightBulb({name: 'Brighty'});
+//     bulb.save(function (err, bulb) {
+//       (err) ? console.log(err) : bulb.speak();
+//     });
+//   })
+// });
+//
+// io.on('disconnect', function (data) {
+//   console.log('user disconnected', data);
+// });
 
 /**
  * Connecting with db

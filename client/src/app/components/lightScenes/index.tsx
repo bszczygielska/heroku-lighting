@@ -29,7 +29,7 @@ export class LightScenes extends React.Component<ILightScenesProps, any> {
           {clientStore.lightScenes.map( (scene, idx) => {
             return (
               <div key={`sc_${idx}`}>{JSON.stringify(scene)}</div>
-            )
+          )
           })}
 
         </Card>
