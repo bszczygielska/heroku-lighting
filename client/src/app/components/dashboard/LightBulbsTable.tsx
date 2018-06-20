@@ -35,16 +35,19 @@ export class LightBulbsTable extends React.Component<ILightsTableProps, any> {
   }
 
 
-  decideWhatRender(obj: object, path: string) {
-    console.log('>> decide what render', obj, path);
+  decideWhatRender(obj: object, path: string): any {
+    if (typeof obj !== 'object')
+      return;
+    let items = [];
     for (let key in obj) {
       let newPath = (path === 'blank') ? `${key}` : `${path}.${key}`;
-      (obj[key] instanceof LightBulb) ? this.renderLight(obj[key]) : this.renderRoom(key, obj[key], newPath)
+      const item = (obj[key] instanceof LightBulb) ? this.renderLight(obj[key]) : this.renderRoom(key, obj[key], newPath)
+      items.push(item);
     }
+    return items;
   }
 
   renderLight(light: LightBulb) {
-    console.log('---renderLight', light.displayableName);
     return <List.Item key={`l_${light.name}`}
                       actions={[<Icon type="minus-circle-o" onClick={() => this.onDeleteHandler(light)}/>]}>
       <List.Item.Meta title={light.displayableName} description={light.name}/>
@@ -52,7 +55,6 @@ export class LightBulbsTable extends React.Component<ILightsTableProps, any> {
   }
 
   renderRoom(name: string, room: object, path: string) {
-    console.log('+++renderRoom', name, room, path);
     const { clientStore } = this.props;
     return <Card
       key={`room_${name}`}

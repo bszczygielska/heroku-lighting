@@ -37,8 +37,7 @@ export class ClientStore {
   get coolObjectForRendering() {
     let result = {};
     this.lightBulbs.map(light => {
-      let name = light.name.replace(':', '.');
-      lodash.set(result, name, light);
+      lodash.set(result, light.name, light);
     });
     return result;
   }
@@ -48,7 +47,6 @@ export class ClientStore {
     const response = await this.api.post('/addLight', createdLight);
     if (response)
       this.setValue('lightBulbs', this.lightBulbs.concat(createdLight));
-
   }
 
   public async addLightScene(sceneName: string) {
@@ -74,9 +72,10 @@ export class ClientStore {
     this.setValue('lightBulbs', filteredLights);
   }
 
+  // TODO: nie przekazujesz parametrów światla do modelu
   public async fetchLights() {
     const response = await this.api.get('/lights');
-    this.lightBulbs = response;
+    this.lightBulbs = response.map((light: any) => new LightBulb(light.name));
   }
 
   public onNewRoomLight(roomName: string, lightName: string) {
@@ -92,23 +91,22 @@ export class ClientStore {
   }
 
   combineNameForNewRoom(roomName: string, lightName: string) {
-    return (this.forNewRoom === 'blank') ? `${roomName}:${lightName}` : `${this.forNewRoom}:${roomName}:${lightName}`
+    return (this.forNewRoom === 'blank') ? `${roomName}.${lightName}` : `${this.forNewRoom}.${roomName}:${lightName}`
   }
 
   combineNameForNewLight(lightName: string) {
     if (this.forNewLight === 'blank') {
       return lightName;
     }
-    let nameArr = this.forNewLight.split(':');
+    let nameArr = this.forNewLight.split('.');
     nameArr.splice(nameArr.length - 1, 1, lightName);
-    return nameArr.join(':');
+    return nameArr.join('.');
   }
 
   @action
   setValue(key: string, value: any) {
     this[key] = value;
   }
-
 }
 
 export default ClientStore;

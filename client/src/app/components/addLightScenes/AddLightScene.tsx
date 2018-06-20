@@ -31,7 +31,6 @@ export class AddLightScene extends React.Component<ILightScenesProps, any> {
 
   handleCustomizeClick(light: LightBulb) {
     this.setState({ 'showModal': true, 'lightToEdit': light });
-
   }
 
   render() {

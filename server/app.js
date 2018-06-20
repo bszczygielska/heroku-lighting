@@ -1,7 +1,6 @@
 const app = require('express')();
 const http = require('http').Server(app);
-const io = require('socket.io')(http);
-
+const bodyParser = require('body-parser');
 /**
  * Establishing io connection
  */
@@ -11,33 +10,11 @@ http.listen(port, () => {
   console.log('io server listening on: ' + port);
 });
 
-// io.on('connection', socket => {
-//   console.log('a user connected, socket id: ', socket.id);
-//
-//   socket.emit('hiFromServer', 'You are connected');
-//
-//   socket.on('fromClient', function (data) {
-//     console.log('A client ' + socket.id + ' is speaking to me!: ' + data);
-//     io.emit('toSimulation', data);
-//   });
-//
-//   socket.on('createLight', function (data) {
-//     const bulb = new LightBulb({name: 'Brighty'});
-//     bulb.save(function (err, bulb) {
-//       (err) ? console.log(err) : bulb.speak();
-//     });
-//   })
-// });
-//
-// io.on('disconnect', function (data) {
-//   console.log('user disconnected', data);
-// });
-
 /**
  * Connecting with db
  */
 const mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/test');
+mongoose.connect('mongodb://localhost/aa');
 
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
@@ -103,7 +80,10 @@ const lightSceneSchema = mongoose.Schema({
 
 const LightScene = mongoose.model('LightScene', lightSceneSchema);
 
+app.use(bodyParser.json());
+
 app.all('/*', function(req, res, next) {
+  console.log(req.body);
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "X-Requested-With, Content-Type, Accept");
   next();
