@@ -2,21 +2,18 @@ import { observable } from 'mobx';
 
 export class LightBulb {
 
-  constructor(name: string) {
+  constructor(name: string, id?: string) {
     this.name = name;
+    if (id)
+      this._id = id;
   }
 
   @observable public name: string;
-  @observable public state: boolean;
-  @observable public r: number;
-  @observable public g: number;
-  @observable public b: number;
-  @observable public s: number;
-  @observable public p: number;
+  @observable public _id: string;
 
   get displayableName() {
     let nameArr = this.name.split('.');
-    return nameArr[nameArr.length-1];
+    return nameArr[nameArr.length - 1];
   }
 
 }
