@@ -4,10 +4,10 @@ import 'antd/dist/antd.less';
 import List from 'antd/lib/list';
 import ClientStore from '../../stores/ClientStore';
 import { observer } from 'mobx-react';
-import LightBulb from '../../models/LightBulb';
 import AddSceneNameForm from './AddSceneName';
 import Avatar from 'antd/es/avatar';
 import { Modal } from 'antd/lib';
+import SceneLight from "../../models/SceneLight";
 
 interface ILightScenesProps {
   clientStore: ClientStore,
@@ -18,8 +18,8 @@ export class AddLightScene extends React.Component<ILightScenesProps, any> {
 
   state = {
     showModal: false,
-    lightToEdit: LightBulb,
-  }
+    lightToEdit: SceneLight,
+  };
 
   handleOk() {
     this.setState({ 'showModal': false })
@@ -29,7 +29,7 @@ export class AddLightScene extends React.Component<ILightScenesProps, any> {
     this.setState({ 'showModal': false })
   }
 
-  handleCustomizeClick(light: LightBulb) {
+  handleCustomizeClick(light: SceneLight) {
     this.setState({ 'showModal': true, 'lightToEdit': light });
   }
 
@@ -42,7 +42,7 @@ export class AddLightScene extends React.Component<ILightScenesProps, any> {
             bordered
             dataSource={ lightsToScene }
             pagination={ { pageSize: 10 } }
-            renderItem={ (light: LightBulb) => (
+            renderItem={ (light: SceneLight) => (
               <List.Item actions={ [
                 <div onClick={ () => this.handleCustomizeClick(light) }>customize</div>,
                 <Icon type="minus-circle-o" onClick={ () => clientStore.onDeleteLightToScene(light) }/>,

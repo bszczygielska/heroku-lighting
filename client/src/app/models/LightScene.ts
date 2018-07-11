@@ -1,15 +1,15 @@
 import { observable } from 'mobx';
-import LightBulb from "./LightBulb";
+import SceneLight from "./SceneLight";
 
 export class LightScene {
 
-  constructor(name: string, bulbs: LightBulb[]) {
+  constructor(name: string, sceneLights: SceneLight[]) {
     this.name = name;
-    this.lightBulbs = bulbs;
+    this.sceneLights = sceneLights;
   }
 
   @observable public name: string;
-  @observable public lightBulbs: LightBulb[];
+  @observable public sceneLights: SceneLight[];
 
 }
 

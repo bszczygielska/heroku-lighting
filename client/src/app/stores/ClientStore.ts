@@ -2,6 +2,7 @@ import LightBulb from '../models/LightBulb';
 import { action, observable } from 'mobx';
 import * as lodash from 'lodash';
 import LightScene from '../models/LightScene';
+import SceneLight from "../models/SceneLight";
 
 export class ClientStore {
   public api: API;
@@ -12,24 +13,23 @@ export class ClientStore {
 
   @observable public lightBulbs: LightBulb[] = [];
   @observable public lightScenes: LightScene[] = [];
-  @observable public projectName: string = '';
   @observable public forNewLight: string;
   @observable public forNewRoom: string;
-  @observable public lightsToScene: LightBulb[] = [];
+  @observable public lightsToScene: SceneLight[] = [];
   @observable public sceneName: string;
   @observable public storedRoomName: string = '';
 
   public async fetchLights() {
     const response = await this.api.get('/lights');
     let sortedLightBulbs = response
-      .map((light: any) => new LightBulb(light.name))
+      .map((light: any) => new LightBulb(light.name, light._id))
       .sort((a: LightBulb, b: LightBulb) => a.name.split('.').length - b.name.split('.').length);
     this.setValue('lightBulbs', sortedLightBulbs);
   }
 
   public async onNewLight(lightName: string) {
     let newName = this.combineNameForNewLight(lightName);
-    let newLight = new LightBulb(newName)
+    let newLight = new LightBulb(newName);
     const response = await this.addLight(newLight);
     if (response.light) {
       let createdLight = new LightBulb(response.light.name, response.light._id);
@@ -42,8 +42,8 @@ export class ClientStore {
   public onNewRoomLight(roomName: string, lightName: string) {
     let newName = this.combineNameForNewRoom(roomName, lightName);
     let newLight = new LightBulb(newName);
-    this.addLight(newLight);
-    this.setValue('forNewRoom', null);
+    this.addLight(newLight)
+      .then(() => this.setValue('forNewRoom', null))
   }
 
   combineNameForNewRoom(roomName: string, lightName: string) {
@@ -54,18 +54,21 @@ export class ClientStore {
     if (this.forNewLight === 'blank') {
       return lightName;
     }
-    let nameArr = this.forNewLight.split('.');
-    nameArr.splice(nameArr.length - 1, 1, lightName);
-    return nameArr.join('.');
+    return `${this.forNewLight}.${lightName}`
   }
 
   public onChooseLightToScene(light: LightBulb) {
-    if (this.lightsToScene.indexOf(light) < 0) {
-      this.setValue('lightsToScene', this.lightsToScene.concat(light))
+    try {
+      let sceneLight = new SceneLight(light.name, light._id);
+      if (this.lightsToScene.indexOf(sceneLight) < 0) {
+        this.setValue('lightsToScene', this.lightsToScene.concat(sceneLight))
+      }
+    } catch (e) {
+      console.log(e.message)
     }
   }
 
-  public onDeleteLightToScene(light: LightBulb) {
+  public onDeleteLightToScene(light: SceneLight) {
     const filteredLights = this.lightsToScene.filter(l => l !== light);
     this.setValue('lightsToScene', filteredLights);
   }
@@ -100,11 +103,11 @@ export class ClientStore {
   }
 
   public async addLightScene(sceneName: string) {
+    console.log(this.lightsToScene)
     const newScene = new LightScene(sceneName, this.lightsToScene);
     let response = await this.api.post('/lightScenes', newScene);
-    if (response.scene) {
-      let createdScene = new LightScene(response.scene.name, response.scene.lights);
-      this.setValue('lightScenes', this.lightScenes.concat(createdScene));
+    if (!response.errCode) {
+      this.setValue('lightScenes', this.lightScenes.concat(newScene));
     }
   }
 }

@@ -12,7 +12,7 @@ try {
    * Connecting with db
    */
   const mongoose = require('mongoose');
-  mongoose.connect('mongodb://localhost/test')
+  mongoose.connect('mongodb://localhost/testy')
     .catch(err => {
       console.error('App starting error:', err.stack);
       process.exit(1);
@@ -70,7 +70,11 @@ try {
   const LightBulb = mongoose.model('LightBulb', lightBulbSchema);
 
   const sceneLightSchema = mongoose.Schema({
-    id: {
+    _id: {
+      type: String,
+      required: true,
+    },
+    name: {
       type: String,
       required: true,
     },
@@ -106,7 +110,7 @@ try {
       type: String,
       required: true,
     },
-    lights: {
+    sceneLights: {
       type: [sceneLightSchema],
       required: true,
     }
@@ -157,7 +161,7 @@ try {
 
   app.put('/lights/:lightId', function (req, res) {
     try {
-      LightBulb.updateOne({_id: req.params.lightId}, res.body, function (err, res) {
+      LightBulb.updateOne({_id: req.params._id}, res.body, function (err, res) {
         if (err)
           throw new Error(err);
         res.json({message: 'light updated succesfully'})
@@ -169,7 +173,7 @@ try {
 
   app.delete('/lights/:lightId', function (req, res) {
     try {
-      LightBulb.deleteOne({_id: req.params.lightId}, function (err) {
+      LightBulb.deleteOne({_id: req.params._id}, function (err) {
         if (err)
           throw new Error(err);
         res.json({message: 'light deleted successfully'})
@@ -181,9 +185,9 @@ try {
 
   app.get('/lightScenes', function (req, res) {
     try {
-      LightScene.find(function (err, lights) {
+      LightScene.find(function (err, scenes) {
         if (err) throw new Error(err);
-        res.json(lights);
+        res.json(scenes);
       })
     } catch (err) {
       res.json({message: err.message, errCode: err.statusCode})
@@ -193,7 +197,7 @@ try {
   app.post('/lightScenes', function (req, res) {
     let scene = new LightScene(req.body);
     try {
-      scene.save(function (err, bulb) {
+      scene.save(function (err, scene) {
         if (err)
           throw new Error(err)
         res.json({message: 'lightScene created successfully'});
@@ -205,7 +209,7 @@ try {
 
   app.put('/lightScenes/:lightSceneId', function (req, res) {
     try {
-      scene.save(function (err, bulb) {
+      scene.save(function (err, scene) {
         if (err)
           throw new Error(err);
         res.json({message: 'lightScene updated successfully'});
@@ -217,7 +221,7 @@ try {
 
   app.delete('/lightScenes/:lightSceneId', function (req, res) {
     try {
-      scene.save(function (err, bulb) {
+      scene.save(function (err, scene) {
         if (err)
           throw new Error(err)
         res.json({message: 'lightScene deleted successfully'});

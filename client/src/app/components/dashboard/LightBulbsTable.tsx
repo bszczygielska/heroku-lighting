@@ -86,8 +86,7 @@ export class LightBulbsTable extends React.Component<ILightsTableProps, any> {
 
   render() {
     const { clientStore } = this.props;
-    const { projectName } = clientStore;
-    return this.renderRoom(projectName, clientStore.coolObjectForRendering, 'blank')
+    return this.renderRoom('Your project', clientStore.coolObjectForRendering, 'blank')
   }
 }
 
