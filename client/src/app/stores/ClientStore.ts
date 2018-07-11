@@ -27,6 +27,13 @@ export class ClientStore {
     this.setValue('lightBulbs', sortedLightBulbs);
   }
 
+  public async fetchScenes() {
+    const response = await this.api.get('/lightScenes');
+    if (!response.errCode) {
+      this.setValue('lightScenes', response.map((scene: LightScene) => new LightScene(scene.name, scene.sceneLights, scene._id)));
+    }
+  }
+
   public async onNewLight(lightName: string) {
     let newName = this.combineNameForNewLight(lightName);
     let newLight = new LightBulb(newName);
@@ -90,7 +97,8 @@ export class ClientStore {
     return result;
   }
 
-  @action setValue(key: string, value: any) {
+  @action
+  setValue(key: string, value: any) {
     this[key] = value;
   }
 
@@ -103,11 +111,17 @@ export class ClientStore {
   }
 
   public async addLightScene(sceneName: string) {
-    console.log(this.lightsToScene)
     const newScene = new LightScene(sceneName, this.lightsToScene);
     let response = await this.api.post('/lightScenes', newScene);
     if (!response.errCode) {
       this.setValue('lightScenes', this.lightScenes.concat(newScene));
+    }
+  }
+
+  public async onDeleteScene(scene: LightScene) {
+    const response = await this.api.deleteOne(`/lightScenes/${scene._id}`);
+    if (!response.errCode) {
+      this.setValue('lightScenes', this.lightScenes.filter(s => s !== scene));
     }
   }
 }

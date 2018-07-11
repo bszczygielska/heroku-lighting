@@ -12,7 +12,7 @@ try {
    * Connecting with db
    */
   const mongoose = require('mongoose');
-  mongoose.connect('mongodb://localhost/testy')
+  mongoose.connect('mongodb://localhost/tests')
     .catch(err => {
       console.error('App starting error:', err.stack);
       process.exit(1);
@@ -221,7 +221,7 @@ try {
 
   app.delete('/lightScenes/:lightSceneId', function (req, res) {
     try {
-      scene.save(function (err, scene) {
+      LightScene.deleteOne({_id: req.params._id}, function (err) {
         if (err)
           throw new Error(err)
         res.json({message: 'lightScene deleted successfully'});
