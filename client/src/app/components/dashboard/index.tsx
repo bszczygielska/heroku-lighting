@@ -20,11 +20,9 @@ export class Dashboard extends React.Component<IAppProps, any> {
 
   render() {
     return (
-      <div style={{ padding: '30px' }}>
-        <Card title={'Here you can add lights and inner spaces to your project'} bordered={false}>
-          <LightBulbsTable {...this.props}/>
-        </Card>
-      </div>
+      <Card title={ 'Here you can add lights and inner spaces to your project' } bordered={ false }>
+        <LightBulbsTable { ...this.props }/>
+      </Card>
     );
   }
 }

@@ -7,7 +7,8 @@ import { observer } from 'mobx-react';
 import AddSceneNameForm from './AddSceneName';
 import Avatar from 'antd/es/avatar';
 import { Modal } from 'antd/lib';
-import SceneLight from "../../models/SceneLight";
+import SceneLight from '../../models/SceneLight';
+import { SketchPicker } from 'react-color';
 
 interface ILightScenesProps {
   clientStore: ClientStore,
@@ -57,6 +58,7 @@ export class AddLightScene extends React.Component<ILightScenesProps, any> {
              visible={ this.state.showModal }
              onOk={ () => this.handleOk() }
              onCancel={ () => this.handleCancel() }>
+        <SketchPicker/>
         Wybieranie koloru { this.state.lightToEdit.name }
       </Modal>
     </div>

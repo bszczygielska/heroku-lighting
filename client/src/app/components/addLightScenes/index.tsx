@@ -29,33 +29,29 @@ export class AddLightScene extends React.Component<ILightScenesProps, any> {
     const { lightBulbs } = clientStore;
 
     return (
-      <div style={{ padding: '30px' }}>
-
-
-        <Card title="Light scenes creator" bordered={false}>
-          <Row gutter={16}>
-            <Col span={12}>
-              <List
-                header={<div>Choose bulbs for light scene</div>}
-                bordered
-                dataSource={lightBulbs}
-                pagination={{ pageSize: 10 }}
-                renderItem={(light: LightBulb) => (
-                  <List.Item actions={[
-                    <Icon type="plus-circle-o" onClick={() => clientStore.onChooseLightToScene(light)}/>,
-                  ]}>
-                    <List.Item.Meta
-                      title={light.displayableName}
-                      description={light.name}/>
-                  </List.Item>)}
-              />
-            </Col>
-            <Col span={12}>
-              <LightSceneEdit {...this.props}/>
-            </Col>
-          </Row>
-        </Card>
-      </div>
+      <Card title="Light scenes creator" bordered={ false }>
+        <Row gutter={ 16 }>
+          <Col span={ 12 }>
+            <List
+              header={ <div>Choose bulbs for light scene</div> }
+              bordered
+              dataSource={ lightBulbs }
+              pagination={ { pageSize: 10 } }
+              renderItem={ (light: LightBulb) => (
+                <List.Item actions={ [
+                  <Icon type="plus-circle-o" onClick={ () => clientStore.onChooseLightToScene(light) }/>,
+                ] }>
+                  <List.Item.Meta
+                    title={ light.displayableName }
+                    description={ light.name }/>
+                </List.Item>) }
+            />
+          </Col>
+          <Col span={ 12 }>
+            <LightSceneEdit { ...this.props }/>
+          </Col>
+        </Row>
+      </Card>
     );
   }
 }

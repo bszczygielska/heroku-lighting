@@ -24,18 +24,15 @@ export class LightManager extends React.Component<ILightScenesProps, any> {
     const { clientStore } = this.props;
 
     return (
-      <div style={ { padding: '30px' } }>
-        <Card title="Lights Manager" bordered={ false }>
-          { clientStore.lightScenes.map((scene, idx) => {
-            return (<div>
-                Turn on
-                <Button>{ scene.name }</Button>
-              </div>
-            )
-          }) }
-
-        </Card>
-      </div>
+      <Card title="Lights Manager" bordered={ false }>
+        { clientStore.lightScenes.map((scene, idx) => {
+          return (<div>
+              Turn on
+              <Button>{ scene.name }</Button>
+            </div>
+          )
+        }) }
+      </Card>
     );
   }
 }
