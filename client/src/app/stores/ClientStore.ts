@@ -2,7 +2,7 @@ import LightBulb from '../models/LightBulb';
 import { action, observable } from 'mobx';
 import * as lodash from 'lodash';
 import LightScene from '../models/LightScene';
-import SceneLight from "../models/SceneLight";
+import SceneLight from '../models/SceneLight';
 
 export class ClientStore {
   public api: API;
@@ -39,18 +39,25 @@ export class ClientStore {
     let newLight = new LightBulb(newName);
     const response = await this.addLight(newLight);
     if (response.light) {
-      let createdLight = new LightBulb(response.light.name, response.light._id);
-      this.setValue('lightBulbs', this.lightBulbs.concat(createdLight)
-        .sort((a, b) => a.name.split('.').length - b.name.split('.').length));
+      this.addLightToStore(response);
     }
-    this.setValue('forNewLight', null)
+    this.setValue('forNewLight', null);
   }
 
-  public onNewRoomLight(roomName: string, lightName: string) {
+  public async onNewRoomLight(roomName: string, lightName: string) {
     let newName = this.combineNameForNewRoom(roomName, lightName);
     let newLight = new LightBulb(newName);
-    this.addLight(newLight)
-      .then(() => this.setValue('forNewRoom', null))
+    const response = await this.addLight(newLight);
+    if (response.light) {
+      this.addLightToStore(response)
+    }
+    this.setValue('forNewRoom', null);
+  }
+
+  public addLightToStore(response: any) {
+    let createdLight = new LightBulb(response.light.name, response.light._id);
+    let sortedLightBulbs = this.lightBulbs.concat(createdLight).sort((a, b) => a.name.split('.').length - b.name.split('.').length);
+    this.setValue('lightBulbs', sortedLightBulbs);
   }
 
   combineNameForNewRoom(roomName: string, lightName: string) {
@@ -84,7 +91,8 @@ export class ClientStore {
     const response = await this.deleteLight(light);
     if (!response.errCode) {
       this.setValue('lightBulbs', this.lightBulbs.filter(lights => lights !== light));
-    } else {
+    }
+    else {
       console.log(response)
     }
   }
@@ -173,6 +181,5 @@ class API {
     };
     return await fetch(path, options as RequestInit).then(data => data.json());
   }
-
 
 }
