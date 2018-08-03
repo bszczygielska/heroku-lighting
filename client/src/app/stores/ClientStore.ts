@@ -82,6 +82,15 @@ export class ClientStore {
     }
   }
 
+  public setLightColor(light: any, color: any) {
+    console.log(color)
+    light.hex = color.hex;
+    light.hue = color.hsl.h;
+    light.saturation = color.hsl.s;
+    light.lightness = color.hsl.l;
+
+  }
+
   public onDeleteLightToScene(light: SceneLight) {
     const filteredLights = this.lightsToScene.filter(l => l !== light);
     this.setValue('lightsToScene', filteredLights);
@@ -120,9 +129,12 @@ export class ClientStore {
 
   public async addLightScene(sceneName: string) {
     const newScene = new LightScene(sceneName, this.lightsToScene);
+    console.log(newScene)
     let response = await this.api.post('/lightScenes', newScene);
     if (!response.errCode) {
       this.setValue('lightScenes', this.lightScenes.concat(newScene));
+      this.setValue('lightsToScene', []);
+      this.setValue('sceneName', '');
     }
   }
 

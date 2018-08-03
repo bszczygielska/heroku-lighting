@@ -36,30 +36,25 @@ try {
       type: Boolean,
       default: false
     },
-    r: {
+    hue: {
       type: Number,
       required: false,
-      default: 255,
+      default: 0,
     },
-    g: {
+    saturation: {
       type: Number,
       required: false,
-      default: 255,
+      default: 0,
     },
-    b: {
+    lightness: {
       type: Number,
       required: false,
-      default: 255,
+      default: 100,
     },
-    s: {
-      type: Number,
+    hex: {
+      type: String,
       required: false,
-      default: 255,
-    },
-    p: {
-      type: Number,
-      required: false,
-      default: 255,
+      default: '',
     },
   });
 
@@ -78,30 +73,25 @@ try {
       type: String,
       required: true,
     },
-    r: {
+    hue: {
       type: Number,
       required: false,
-      default: 255,
+      default: 0,
     },
-    g: {
+    saturation: {
       type: Number,
       required: false,
-      default: 255,
+      default: 0,
     },
-    b: {
+    lightness: {
       type: Number,
       required: false,
-      default: 255,
+      default: 100,
     },
-    s: {
-      type: Number,
+    hex: {
+      type: String,
       required: false,
-      default: 255,
-    },
-    p: {
-      type: Number,
-      required: false,
-      default: 255,
+      default: '',
     },
   });
 

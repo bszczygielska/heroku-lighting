@@ -8,21 +8,29 @@ import AddSceneNameForm from './AddSceneName';
 import Avatar from 'antd/es/avatar';
 import { Modal } from 'antd/lib';
 import SceneLight from '../../models/SceneLight';
-import { SketchPicker } from 'react-color';
+import { SwatchesPicker } from 'react-color';
 
 interface ILightScenesProps {
   clientStore: ClientStore,
 }
 
+interface ILightSceneState {
+  showModal: boolean,
+  lightToEdit: any,
+  selectedColor: any,
+}
+
 @observer
-export class AddLightScene extends React.Component<ILightScenesProps, any> {
+export class AddLightScene extends React.Component<ILightScenesProps, ILightSceneState> {
 
   state = {
     showModal: false,
     lightToEdit: SceneLight,
+    selectedColor: { hex: '' },
   };
 
   handleOk() {
+    this.props.clientStore.setLightColor(this.state.lightToEdit, this.state.selectedColor)
     this.setState({ 'showModal': false })
   }
 
@@ -33,6 +41,10 @@ export class AddLightScene extends React.Component<ILightScenesProps, any> {
   handleCustomizeClick(light: SceneLight) {
     this.setState({ 'showModal': true, 'lightToEdit': light });
   }
+
+  handleChangeComplete = (color: any) => {
+    this.setState({ selectedColor: color })
+  };
 
   render() {
     const { clientStore } = this.props;
@@ -49,17 +61,19 @@ export class AddLightScene extends React.Component<ILightScenesProps, any> {
                 <Icon type="minus-circle-o" onClick={ () => clientStore.onDeleteLightToScene(light) }/>,
               ] }>
                 <List.Item.Meta
-                  avatar={ <Avatar style={ { backgroundColor: 'grey' } } icon="bulb"/> }
+                  avatar={ <Avatar style={ { backgroundColor: light.hex || 'grey' } } icon="bulb"/> }
                   title={ light.displayableName }
                   description={ light.name }/>
               </List.Item>) }/>
 
-      <Modal title="Basic Modal"
+      <Modal title={ `Customize light ${this.state.lightToEdit.name}` }
+             style={ { backgroundColor: this.state.selectedColor.hex } }
              visible={ this.state.showModal }
              onOk={ () => this.handleOk() }
              onCancel={ () => this.handleCancel() }>
-        <SketchPicker/>
-        Wybieranie koloru { this.state.lightToEdit.name }
+        <SwatchesPicker
+          onChangeComplete={ this.handleChangeComplete }
+        />
       </Modal>
     </div>
   }

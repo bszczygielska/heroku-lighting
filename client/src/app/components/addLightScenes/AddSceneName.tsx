@@ -41,7 +41,6 @@ class AddSceneName extends React.Component<IAddLightBulbProps, any> {
                   htmlType="submit">Save scene</Button>
         </FormItem>
       </Form>
-
     );
   }
 }
