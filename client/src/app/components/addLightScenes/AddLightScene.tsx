@@ -9,9 +9,11 @@ import Avatar from 'antd/es/avatar';
 import { Modal } from 'antd/lib';
 import SceneLight from '../../models/SceneLight';
 import { SwatchesPicker } from 'react-color';
+import LightScene from "../../models/LightScene";
 
 interface ILightScenesProps {
   clientStore: ClientStore,
+  sceneToEdit?: LightScene,
 }
 
 interface ILightSceneState {
@@ -25,7 +27,7 @@ export class AddLightScene extends React.Component<ILightScenesProps, ILightScen
 
   state = {
     showModal: false,
-    lightToEdit: SceneLight,
+    lightToEdit: {} as LightScene,
     selectedColor: { hex: '' },
   };
 
@@ -51,7 +53,7 @@ export class AddLightScene extends React.Component<ILightScenesProps, ILightScen
     const { lightsToScene } = clientStore;
 
     return <div>
-      <List header={ <AddSceneNameForm { ...this.props }/> }
+      <List header={ <AddSceneNameForm { ...this.props } sceneToEdit={this.props.sceneToEdit}/> }
             bordered
             dataSource={ lightsToScene }
             pagination={ { pageSize: 10 } }

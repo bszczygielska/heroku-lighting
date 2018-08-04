@@ -71,6 +71,11 @@ export class ClientStore {
     return `${this.forNewLight}.${lightName}`
   }
 
+  public setSceneToEdit(scene: LightScene) {
+    this.setValue('lightsToScene', scene.sceneLights);
+    this.setValue('sceneName', scene.name);
+  }
+
   public onChooseLightToScene(light: LightBulb) {
     try {
       let sceneLight = new SceneLight(light.name, light._id);
@@ -83,7 +88,6 @@ export class ClientStore {
   }
 
   public setLightColor(light: any, color: any) {
-    console.log(color)
     light.hex = color.hex;
     light.hue = color.hsl.h;
     light.saturation = color.hsl.s;
@@ -127,9 +131,10 @@ export class ClientStore {
     return this.api.deleteOne(`/lights/${light._id}`);
   }
 
+
+
   public async addLightScene(sceneName: string) {
     const newScene = new LightScene(sceneName, this.lightsToScene);
-    console.log(newScene)
     let response = await this.api.post('/lightScenes', newScene);
     if (!response.errCode) {
       this.setValue('lightScenes', this.lightScenes.concat(newScene));
@@ -142,6 +147,16 @@ export class ClientStore {
     const response = await this.api.deleteOne(`/lightScenes/${scene._id}`);
     if (!response.errCode) {
       this.setValue('lightScenes', this.lightScenes.filter(s => s !== scene));
+    }
+  }
+
+  public async updateLightScene(sceneName: string, scene: LightScene){
+    const updatedScene = new LightScene(sceneName, this.lightsToScene);
+    let response = await this.api.put(`/lightScenes/${scene._id}`, updatedScene);
+    if (!response.errCode) {
+      scene.name = sceneName;
+      this.setValue('lightsToScene', []);
+      this.setValue('sceneName', '');
     }
   }
 }
