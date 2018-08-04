@@ -12,7 +12,7 @@ try {
    * Connecting with db
    */
   const mongoose = require('mongoose');
-  mongoose.connect('mongodb://localhost/tests')
+  mongoose.connect('mongodb://localhost/tests3')
     .catch(err => {
       console.error('App starting error:', err.stack);
       process.exit(1);
