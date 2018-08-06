@@ -151,6 +151,8 @@ export class ClientStore {
   }
 
   public async updateLightScene(sceneName: string, scene: LightScene){
+    scene.name = sceneName;
+
     const updatedScene = new LightScene(sceneName, this.lightsToScene);
     let response = await this.api.put(`/lightScenes/${scene._id}`, updatedScene);
     if (!response.errCode) {
