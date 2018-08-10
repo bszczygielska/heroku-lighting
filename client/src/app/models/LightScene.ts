@@ -14,6 +14,7 @@ export class LightScene {
   @observable public name: string;
   @observable public sceneLights: SceneLight[];
   @observable public _id: string;
+  @observable public state: boolean;
 
 }
 

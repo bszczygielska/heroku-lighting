@@ -12,7 +12,7 @@ try {
    * Connecting with db
    */
   const mongoose = require('mongoose');
-  mongoose.connect('mongodb://localhost/tests3')
+  mongoose.connect('mongodb://localhost/lightTest')
     .catch(err => {
       console.error('App starting error:', err.stack);
       process.exit(1);
@@ -103,6 +103,10 @@ try {
     sceneLights: {
       type: [sceneLightSchema],
       required: true,
+    },
+    state: {
+      type: Boolean,
+      default: false,
     }
   });
 
@@ -121,7 +125,7 @@ try {
    *  Routes
    */
   app.get('/', function(req, res) {
-    res.json({ message: 'hooray! welcome to our api!' });
+    res.json({ message: 'hooray! welcome to api!' });
   });
 
   app.get('/lights', function(req, res) {
@@ -200,18 +204,25 @@ try {
   app.put('/lightScenes/:lightSceneId', function(req, res) {
     let data = {};
     try {
-      LightScene.updateOne({ _id: req.params._id }, res.body, function(err, response) {
-        data = err ? { status: false, error: err.message } : { status: true, message: 'scene updated successfully' }
-        res.json(data)
-      });
+      LightScene.findById(req.params.lightSceneId, function (err, scene) {
+        if (err) {
+          data = err.message
+        } else {
+          scene.set(req.body)
+          scene.save(function(err) {
+            data = err ? err.message : 'Scene updated successfully';
+          })
+        }
+        res.send(data)
+      })
     } catch (err) {
       res.json({ message: err.message, errCode: err.statusCode })
     }
   });
 
-  app.delete('/lightScenes/:lightSceneId', function(req, response) {
+  app.delete('/lightScenes/:lightSceneId', function(req, res) {
     try {
-      LightScene.deleteOne({ _id: req.params._id }, function(err) {
+      LightScene.deleteOne({ _id: req.params.lightSceneId }, function(err) {
         if (err)
           throw new Error(err)
         res.json({ message: 'lightScene deleted successfully' });

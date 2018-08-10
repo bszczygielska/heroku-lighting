@@ -92,7 +92,6 @@ export class ClientStore {
     light.hue = color.hsl.h;
     light.saturation = color.hsl.s;
     light.lightness = color.hsl.l;
-
   }
 
   public onDeleteLightToScene(light: SceneLight) {
@@ -131,8 +130,6 @@ export class ClientStore {
     return this.api.deleteOne(`/lights/${light._id}`);
   }
 
-
-
   public async addLightScene(sceneName: string) {
     const newScene = new LightScene(sceneName, this.lightsToScene);
     let response = await this.api.post('/lightScenes', newScene);
@@ -151,14 +148,21 @@ export class ClientStore {
   }
 
   public async updateLightScene(sceneName: string, scene: LightScene){
-    scene.name = sceneName;
-
     const updatedScene = new LightScene(sceneName, this.lightsToScene);
     let response = await this.api.put(`/lightScenes/${scene._id}`, updatedScene);
     if (!response.errCode) {
       scene.name = sceneName;
       this.setValue('lightsToScene', []);
       this.setValue('sceneName', '');
+    }
+  }
+
+  public async toggleScene(scene: LightScene) {
+    let stateToSet = !scene.state;
+    console.log(stateToSet)
+    let response = await this.api.put(`/lightScenes/${scene._id}`, { state: stateToSet} );
+    if (!response.errCode) {
+      scene.state = stateToSet;
     }
   }
 }
