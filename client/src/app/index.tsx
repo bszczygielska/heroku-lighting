@@ -21,6 +21,8 @@ const rootStores = {
   history: history,
 };
 
+//test
+
 ReactDOM.render(
   <Root stores={ rootStores }>
     <Router history={ rootStores.history }>
