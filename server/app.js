@@ -132,7 +132,7 @@ try {
    */
 
   app.get('*', (req, res) => {
-    res.sendFile(path.join('../client/build/index.html'));
+    res.sendFile('../client/build/index.html');
   });
 
   app.get('/lights', function(req, res) {
