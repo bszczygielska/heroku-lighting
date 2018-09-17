@@ -134,7 +134,7 @@ try {
    */
 
   app.get('*', (req, res) => {
-    res.sendFile('app/client/build/index.html');
+    res.sendFile('index.html', { root: 'app/client/build'});
   });
 
   app.get('/lights', function(req, res) {
