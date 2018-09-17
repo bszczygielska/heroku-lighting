@@ -11,7 +11,6 @@ const port = process.env.PORT || 5000;
 try {
   app.use(express.static('../client/build'));
 
-
   http.listen(port, () => {
     console.log('io server listening on: ' + port);
   });
@@ -134,7 +133,7 @@ try {
    */
 
   app.get('*', (req, res) => {
-    res.sendFile('client/build/index.html', { root: '../'});
+    res.sendFile(express.static('client/build/index.html', { root: '../'}));
   });
 
   app.get('/lights', function(req, res) {
