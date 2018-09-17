@@ -8,6 +8,7 @@ export class LightBulb {
       this._id = id;
   }
 
+  //test
   @observable public name: string;
   @observable public _id: string;
 
