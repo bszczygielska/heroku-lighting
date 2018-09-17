@@ -2,7 +2,7 @@ const app = require('express')();
 const http = require('http').Server(app);
 const bodyParser = require('body-parser');
 
-const port = 5000;
+const port = process.env.PORT || 5000;
 try {
   http.listen(port, () => {
     console.log('io server listening on: ' + port);
