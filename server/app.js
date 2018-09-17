@@ -133,8 +133,7 @@ try {
    */
 
   app.get('*', (req, res) => {
-    console.log(__dirname)
-    res.sendFile(express.static('client/build/index.html', { root: '../'}));
+    res.sendFile('client/build/index.html', { root: '../'});
   });
 
   app.get('/lights', function(req, res) {
