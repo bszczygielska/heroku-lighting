@@ -133,6 +133,7 @@ try {
    */
 
   app.get('*', (req, res) => {
+    console.log(__dirname)
     res.sendFile(express.static('client/build/index.html', { root: '../'}));
   });
 
