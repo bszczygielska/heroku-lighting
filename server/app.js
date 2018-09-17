@@ -1,6 +1,7 @@
 const app = require('express')();
 const http = require('http').Server(app);
 const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
 
 const port = process.env.PORT || 5000;
 try {
@@ -11,7 +12,7 @@ try {
   /**
    * Connecting with db
    */
-  const mongoose = require('mongoose');
+
   mongoose.connect('mongodb://ds159772.mlab.com:59772/heroku_6nhrd1gm')
     .catch(err => {
       console.error('App starting error:', err.stack);
