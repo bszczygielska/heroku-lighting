@@ -4,8 +4,6 @@ import * as lodash from 'lodash';
 import LightScene from '../models/LightScene';
 import SceneLight from '../models/SceneLight'
 
-const serverPort = require('../../../../server/process.env');
-
 export class ClientStore {
   public api: API;
 
@@ -172,7 +170,7 @@ export class ClientStore {
 export default ClientStore;
 
 class API {
-  private apiUrl: string = serverPort.PORT || 'http://localhost:5000';
+  private apiUrl: string = 'https://morning-reef-58277.herokuapp.com/api';
   private headers = {
     'Accept': 'application/json',
     'Content-Type': 'application/json'

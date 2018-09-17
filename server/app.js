@@ -1,10 +1,17 @@
-const app = require('express')();
+const express = require('express');
+const app = express();
 const http = require('http').Server(app);
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const path = require('path');
 
 const port = process.env.PORT || 5000;
+
+
 try {
+  app.use(express.static(path.join(__dirname, 'client/build')));
+
+
   http.listen(port, () => {
     console.log('io server listening on: ' + port);
   });
@@ -125,8 +132,9 @@ try {
   /**
    *  Routes
    */
-  app.get('/', function(req, res) {
-    res.json({ message: 'hooray! welcome to api!' });
+
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname+'/client/build/index.html'));
   });
 
   app.get('/lights', function(req, res) {
@@ -140,7 +148,7 @@ try {
     }
   });
 
-  app.post('/lights', function(req, res) {
+  app.post('/api/lights', function(req, res) {
     let bulb = new LightBulb(req.body);
     try {
       bulb.save(function(err, bulb) {
@@ -154,7 +162,7 @@ try {
     }
   });
 
-  app.put('/lights/:lightId', function(req, res) {
+  app.put('/api/lights/:lightId', function(req, res) {
     try {
       LightBulb.updateOne({ _id: req.params._id }, req.body, function(err, res) {
         if (err)
@@ -166,7 +174,7 @@ try {
     }
   });
 
-  app.delete('/lights/:lightId', function(req, res) {
+  app.delete('/api/lights/:lightId', function(req, res) {
     try {
       LightBulb.deleteOne({ _id: req.params._id }, function(err) {
         if (err)
@@ -178,7 +186,7 @@ try {
     }
   });
 
-  app.get('/lightScenes', function(req, res) {
+  app.get('/api/lightScenes', function(req, res) {
     try {
       LightScene.find(function(err, scenes) {
         if (err) throw new Error(err);
@@ -189,7 +197,7 @@ try {
     }
   });
 
-  app.post('/lightScenes', function(req, res) {
+  app.post('/api/lightScenes', function(req, res) {
     let scene = new LightScene(req.body);
     try {
       scene.save(function(err, scene) {
@@ -202,14 +210,14 @@ try {
     }
   });
 
-  app.put('/lightScenes/:lightSceneId', function(req, res) {
+  app.put('/api/lightScenes/:lightSceneId', function(req, res) {
     let data = {};
     try {
       LightScene.findById(req.params.lightSceneId, function (err, scene) {
         if (err) {
           data = err.message
         } else {
-          scene.set(req.body)
+          scene.set(req.body);
           scene.save(function(err) {
             data = err ? err.message : 'Scene updated successfully';
           })
@@ -221,7 +229,7 @@ try {
     }
   });
 
-  app.delete('/lightScenes/:lightSceneId', function(req, res) {
+  app.delete('/api/lightScenes/:lightSceneId', function(req, res) {
     try {
       LightScene.deleteOne({ _id: req.params.lightSceneId }, function(err) {
         if (err)
