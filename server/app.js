@@ -133,7 +133,7 @@ try {
    */
 
   app.get('*', (req, res) => {
-    res.sendFile('client/build/index.html', { root: '../'});
+    res.sendFile('client/release/index.html', { root: '../'});
   });
 
   app.get('/lights', function(req, res) {
@@ -201,7 +201,7 @@ try {
     try {
       scene.save(function(err, scene) {
         if (err)
-          throw new Error(err)
+          throw new Error(err);
         res.json({ message: 'lightScene created successfully', scene: scene });
       });
     } catch (err) {
