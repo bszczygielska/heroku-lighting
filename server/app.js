@@ -140,7 +140,6 @@ try {
   app.get('/api/lights', async function(req, res, next) {
     try {
       const lights = await LightBulb.find();
-      console.log(lights);
       res.status(200).json(lights);
     } catch (exception) {
       next(exception);

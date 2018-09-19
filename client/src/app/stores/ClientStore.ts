@@ -29,7 +29,7 @@ export class ClientStore {
 
   public async fetchScenes() {
     const response = await this.api.get('/lightScenes');
-    if (response.statusCode === 200) {
+    if (response.status === 200) {
       this.setValue('lightScenes', response.map((scene: LightScene) => new LightScene(scene.name, scene.sceneLights, scene._id)));
     }
   }
@@ -38,7 +38,7 @@ export class ClientStore {
     let newName = this.combineNameForNewLight(lightName);
     let newLight = new LightBulb(newName);
     const response = await this.addLight(newLight);
-    if (response.statusCode === 200) {
+    if (response.status === 200) {
       this.addLightToStore(response);
     }
     this.setValue('forNewLight', null);
@@ -48,7 +48,7 @@ export class ClientStore {
     let newName = this.combineNameForNewRoom(roomName, lightName);
     let newLight = new LightBulb(newName);
     const response = await this.addLight(newLight);
-    if (response.statusCode === 200) {
+    if (response.status === 200) {
       this.addLightToStore(response)
     }
     this.setValue('forNewRoom', null);
@@ -101,7 +101,7 @@ export class ClientStore {
 
   public async onDeleteLight(light: LightBulb) {
     const response = await this.deleteLight(light);
-    if (response.statusCode === 200) {
+    if (response.status === 200) {
       this.setValue('lightBulbs', this.lightBulbs.filter(lights => lights !== light));
     }
     else {
@@ -133,7 +133,7 @@ export class ClientStore {
   public async addLightScene(sceneName: string) {
     const newScene = new LightScene(sceneName, this.lightsToScene);
     let response = await this.api.post('/lightScenes', newScene);
-    if (response.statusCode === 200) {
+    if (response.status === 200) {
       this.setValue('lightScenes', this.lightScenes.concat(newScene));
       this.setValue('lightsToScene', []);
       this.setValue('sceneName', '');
@@ -142,7 +142,7 @@ export class ClientStore {
 
   public async onDeleteScene(scene: LightScene) {
     const response = await this.api.deleteOne(`/lightScenes/${scene._id}`);
-    if (response.statusCode === 200) {
+    if (response.status === 200) {
       this.setValue('lightScenes', this.lightScenes.filter(s => s !== scene));
     }
   }
@@ -150,7 +150,7 @@ export class ClientStore {
   public async updateLightScene(sceneName: string, scene: LightScene) {
     const updatedScene = new LightScene(sceneName, this.lightsToScene);
     let response = await this.api.put(`/lightScenes/${scene._id}`, updatedScene);
-    if (response.statusCode === 200) {
+    if (response.status === 200) {
       scene.name = sceneName;
       this.setValue('lightsToScene', []);
       this.setValue('sceneName', '');
@@ -160,7 +160,7 @@ export class ClientStore {
   public async toggleScene(scene: LightScene) {
     let stateToSet = !scene.state;
     let response = await this.api.put(`/lightScenes/${scene._id}`, { state: stateToSet });
-    if (response.statusCode === 200) {
+    if (response.status === 200) {
       scene.state = stateToSet;
     }
   }
