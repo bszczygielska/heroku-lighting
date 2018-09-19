@@ -170,7 +170,7 @@ export class ClientStore {
 export default ClientStore;
 
 class API {
-  private apiUrl: string = 'https://morning-reef-58277.herokuapp.com/api';
+  private apiUrl: string = 'https://light-manager-client.herokuapp.com/api';
   private headers = {
     'Accept': 'application/json',
     'Content-Type': 'application/json'
