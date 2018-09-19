@@ -19,7 +19,7 @@ try {
    * Connecting with db
    */
 
-  mongoose.connect('mongodb://ds159772.mlab.com:59772/heroku_6nhrd1gm')
+  mongoose.connect('mongodb://dbuser:dbPassword1@ds159772.mlab.com:59772/heroku_6nhrd1gm')
     .catch(err => {
       console.error('App starting error:', err.stack);
       process.exit(1);
@@ -134,12 +134,7 @@ try {
   /**
    *  Routes
    */
-
-  app.get('*', (req, res) => {
-    res.sendFile('client/build/index.html', { root: '../'});
-  });
-
-  app.get('/lights', function(req, res) {
+  app.get('/api/lights', function(req, res) {
     try {
       LightBulb.find(function(err, lights) {
         if (err) return console.error(err);
@@ -243,6 +238,9 @@ try {
     }
   });
 
+  app.get('*', (req, res) => {
+    res.sendFile('client/build/index.html', { root: '../'});
+  });
 
 } catch (e) {
   console.warn(e.message)
