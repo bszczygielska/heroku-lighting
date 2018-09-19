@@ -3,10 +3,8 @@ const app = express();
 const http = require('http').Server(app);
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-const path = require('path');
 
 const port = process.env.PORT || 5000;
-
 
 try {
   app.use(express.static('../client/build'));
@@ -139,104 +137,82 @@ try {
   /**
    *  Routes
    */
-  app.get('/api/lights', function(req, res, next) {
+  app.get('/api/lights', async function(req, res, next) {
     try {
-      LightBulb.find(function(err, lights) {
-        if (err) throw err;
-        res.json(lights);
-      })
-    } catch (err) {
-      res.json({ message: err.message, errCode: err.statusCode })
+      const lights = await LightBulb.find();
+      console.log(lights);
+      res.status(200).json(lights);
+    } catch (exception) {
+      next(exception);
     }
   });
 
   app.post('/api/lights', async function(req, res, next) {
     try {
-      let bulb = new LightBulb(req.body);
-      await bulb.save();
-      res.json({ message: 'light created successfully', light: bulb });
-      bulb.speak();
+      let createdBulb = new LightBulb(req.body);
+      await createdBulb.save();
+      res.status(200).json({ message: 'light created successfully', light: createdBulb });
+      createdBulb.speak();
     } catch(exception) {
       next(exception);
     }
   });
 
-  app.put('/api/lights/:lightId', function(req, res, next) {
+  app.put('/api/lights/:lightId', async function(req, res, next) {
     try {
-      LightBulb.updateOne({ _id: req.params._id }, req.body, function(err, res) {
-        if (err)
-          throw new Error(err);
-        res.json({ message: 'light updated succesfully' })
-      });
-    } catch (err) {
-      res.json({ message: err.message, errCode: err.statusCode })
+      let updatedBulb = await LightBulb.updateOne({ _id: req.params.lightId }, req.body);
+      updatedBulb.save();
+       res.status(200).json({ message: 'light updated succesfully', light: updatedBulb })
+    } catch (exception) {
+      next(exception)
     }
   });
 
-  app.delete('/api/lights/:lightId', function(req, res, next) {
+  app.delete('/api/lights/:lightId', async function(req, res, next) {
     try {
-      LightBulb.deleteOne({ _id: req.params._id }, function(err) {
-        if (err)
-          throw new Error(err);
-        res.json({ message: 'light deleted successfully' })
-      });
-    } catch (err) {
-      res.json({ message: err.message, errCode: err.statusCode })
+      await LightBulb.deleteOne({ _id: req.params.lightId });
+      res.json({ message: 'light deleted successfully' })
+    } catch (exception) {
+      next(exception)
     }
   });
 
-  app.get('/api/lightScenes', function(req, res, next) {
+  app.get('/api/lightScenes', async function(req, res, next) {
     try {
-      LightScene.find(function(err, scenes) {
-        if (err) throw new Error(err);
-        res.json(scenes);
-      })
-    } catch (err) {
-      res.json({ message: err.message, errCode: err.statusCode })
+      const lightScenes = await LightScene.find();
+      res.status(200).json(lightScenes);
+    } catch (exception) {
+      next(exception)
     }
   });
 
-  app.post('/api/lightScenes', function(req, res, next) {
-    let scene = new LightScene(req.body);
+  app.post('/api/lightScenes', async function(req, res, next) {
     try {
-      scene.save(function(err, scene) {
-        if (err)
-          throw new Error(err);
-        res.json({ message: 'lightScene created successfully', scene: scene });
-      });
-    } catch (err) {
-      res.json({ message: err.message, errCode: err.statusCode })
+      let lightScene = new LightScene(req.body);
+      await lightScene.save();
+      res.json({ message: 'lightScene created successfully', scene: lightScene });
+    } catch (exception) {
+      next(exception)
     }
   });
 
-  app.put('/api/lightScenes/:lightSceneId', function(req, res, next) {
-    let data = {};
+  app.put('/api/lightScenes/:lightSceneId', async function(req, res, next) {
     try {
-      LightScene.findById(req.params.lightSceneId, function (err, scene) {
-        if (err) {
-          data = err.message
-        } else {
-          scene.set(req.body);
-          scene.save(function(err) {
-            data = err ? err.message : 'Scene updated successfully';
-          })
-        }
-        res.send(data)
-      })
-    } catch (err) {
-      res.json({ message: err.message, errCode: err.statusCode })
+      const lightScene = await LightScene.findById(req.params.lightSceneId);
+      lightScene.set(req.body);
+      await lightScene.save();
+      res.status(200).json({message: `lightScene updated successfully`, scene: lightScene})
+    } catch (exception) {
+      next(exception)
     }
   });
 
-  app.delete('/api/lightScenes/:lightSceneId', function(req, res, next) {
+  app.delete('/api/lightScenes/:lightSceneId', async function(req, res, next) {
     try {
-      LightScene.deleteOne({ _id: req.params.lightSceneId }, function(err) {
-        if (err)
-          throw new Error(err)
-        res.json({ message: 'lightScene deleted successfully' });
-      });
-    } catch (err) {
-      res.json({ message: err.message, errCode: err.statusCode })
+      await LightScene.deleteOne({ _id: req.params.lightSceneId });
+      res.status(200).json({ message: 'lightScene deleted successfully' });
+    } catch (exception) {
+      next(exception)
     }
   });
 
@@ -245,7 +221,7 @@ try {
   });
 
   app.use(function errorHandler(err, req, res, next) {
-    console.error(err.stack)
+    console.error(err.stack);
     res.status(500).send(err)
   })
 

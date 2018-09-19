@@ -18,8 +18,7 @@ interface ILightScenesProps {
 export class LightScenes extends React.Component<ILightScenesProps, any> {
 
   state = {
-    showModal: false,
-    showEditModal: false,
+    sceneToDelete: {} as LightScene,
     sceneToEdit: {} as LightScene,
   };
 
@@ -27,9 +26,9 @@ export class LightScenes extends React.Component<ILightScenesProps, any> {
     this.props.clientStore.fetchScenes()
   }
 
-  handleOk(scene: LightScene) {
-    this.props.clientStore.onDeleteScene(scene)
-      .then(() => this.setState({ 'showModal': false }))
+  handleDelete() {
+    this.props.clientStore.onDeleteScene(this.state.sceneToDelete)
+      .then(() => this.setState({ 'sceneToDelete': null }))
       .catch((e) => console.warn(e.message))
   }
 
@@ -38,12 +37,12 @@ export class LightScenes extends React.Component<ILightScenesProps, any> {
   }
 
   handleEditClick(scene: LightScene) {
-    this.props.clientStore.setSceneToEdit(scene)
+    this.props.clientStore.setSceneToEdit(scene);
     this.setState({sceneToEdit: scene})
   }
 
   handleDeleteClick(scene: LightScene) {
-    this.setState({ showModal: true })
+    this.setState({ sceneToDelete: scene })
   }
 
   render() {
@@ -70,12 +69,6 @@ export class LightScenes extends React.Component<ILightScenesProps, any> {
               title={scene.name}
               description={scene.sceneLights.map(l => l.name).join(', ')}/>
 
-            <Modal title="Basic Modal"
-                   visible={this.state.showModal}
-                   onOk={() => this.handleOk(scene)}
-                   onCancel={() => this.handleCancel()}>
-              Are you sure you want to delete scene {scene.name.toUpperCase()}
-            </Modal>
 
           </List.Item>)}/>
           </Col>
@@ -84,6 +77,12 @@ export class LightScenes extends React.Component<ILightScenesProps, any> {
           </Col>
         </Row>
       </Card>
+      <Modal title="Delete scene"
+             visible={!!this.state.sceneToDelete}
+             onOk={() => this.handleDelete()}
+             onCancel={() => this.handleCancel()}>
+        Are you sure you want to delete scene {this.state.sceneToDelete.name.toUpperCase()}
+      </Modal>
     </div>
   }
 }
