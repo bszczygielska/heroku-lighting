@@ -1,9 +1,24 @@
-const app = require('express')();
+const express = require('express');
+const app = express();
 const http = require('http').Server(app);
 const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+const path = require('path');
 
-const port = 5000;
+const port = process.env.PORT || 5000;
+
+
 try {
+  app.use(express.static('../client/build'));
+
+  process.on('uncaughtException', (function(error) {
+    console.error(error)
+  }));
+
+  process.on('error', (function(error) {
+    console.error(error)
+  }));
+
   http.listen(port, () => {
     console.log('io server listening on: ' + port);
   });
@@ -11,8 +26,8 @@ try {
   /**
    * Connecting with db
    */
-  const mongoose = require('mongoose');
-  mongoose.connect('mongodb://localhost/lightTest')
+
+  mongoose.connect('mongodb://dbuser:dbPassword1@ds159772.mlab.com:59772/heroku_6nhrd1gm')
     .catch(err => {
       console.error('App starting error:', err.stack);
       process.exit(1);
@@ -124,14 +139,10 @@ try {
   /**
    *  Routes
    */
-  app.get('/', function(req, res) {
-    res.json({ message: 'hooray! welcome to api!' });
-  });
-
-  app.get('/lights', function(req, res) {
+  app.get('/api/lights', function(req, res, next) {
     try {
       LightBulb.find(function(err, lights) {
-        if (err) return console.error(err);
+        if (err) throw err;
         res.json(lights);
       })
     } catch (err) {
@@ -139,21 +150,18 @@ try {
     }
   });
 
-  app.post('/lights', function(req, res) {
-    let bulb = new LightBulb(req.body);
+  app.post('/api/lights', async function(req, res, next) {
     try {
-      bulb.save(function(err, bulb) {
-        if (err)
-          throw new Error(err);
-        res.json({ message: 'light created successfully', light: bulb });
-        bulb.speak();
-      });
-    } catch (err) {
-      res.json({ message: err.message, errCode: err.statusCode })
+      let bulb = new LightBulb(req.body);
+      await bulb.save();
+      res.json({ message: 'light created successfully', light: bulb });
+      bulb.speak();
+    } catch(exception) {
+      next(exception);
     }
   });
 
-  app.put('/lights/:lightId', function(req, res) {
+  app.put('/api/lights/:lightId', function(req, res, next) {
     try {
       LightBulb.updateOne({ _id: req.params._id }, req.body, function(err, res) {
         if (err)
@@ -165,7 +173,7 @@ try {
     }
   });
 
-  app.delete('/lights/:lightId', function(req, res) {
+  app.delete('/api/lights/:lightId', function(req, res, next) {
     try {
       LightBulb.deleteOne({ _id: req.params._id }, function(err) {
         if (err)
@@ -177,7 +185,7 @@ try {
     }
   });
 
-  app.get('/lightScenes', function(req, res) {
+  app.get('/api/lightScenes', function(req, res, next) {
     try {
       LightScene.find(function(err, scenes) {
         if (err) throw new Error(err);
@@ -188,12 +196,12 @@ try {
     }
   });
 
-  app.post('/lightScenes', function(req, res) {
+  app.post('/api/lightScenes', function(req, res, next) {
     let scene = new LightScene(req.body);
     try {
       scene.save(function(err, scene) {
         if (err)
-          throw new Error(err)
+          throw new Error(err);
         res.json({ message: 'lightScene created successfully', scene: scene });
       });
     } catch (err) {
@@ -201,14 +209,14 @@ try {
     }
   });
 
-  app.put('/lightScenes/:lightSceneId', function(req, res) {
+  app.put('/api/lightScenes/:lightSceneId', function(req, res, next) {
     let data = {};
     try {
       LightScene.findById(req.params.lightSceneId, function (err, scene) {
         if (err) {
           data = err.message
         } else {
-          scene.set(req.body)
+          scene.set(req.body);
           scene.save(function(err) {
             data = err ? err.message : 'Scene updated successfully';
           })
@@ -220,7 +228,7 @@ try {
     }
   });
 
-  app.delete('/lightScenes/:lightSceneId', function(req, res) {
+  app.delete('/api/lightScenes/:lightSceneId', function(req, res, next) {
     try {
       LightScene.deleteOne({ _id: req.params.lightSceneId }, function(err) {
         if (err)
@@ -232,6 +240,14 @@ try {
     }
   });
 
+  app.get('*', (req, res) => {
+    res.sendFile('client/build/index.html', { root: '../'});
+  });
+
+  app.use(function errorHandler(err, req, res, next) {
+    console.error(err.stack)
+    res.status(500).send(err)
+  })
 
 } catch (e) {
   console.warn(e.message)

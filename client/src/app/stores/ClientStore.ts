@@ -2,7 +2,7 @@ import LightBulb from '../models/LightBulb';
 import { action, observable } from 'mobx';
 import * as lodash from 'lodash';
 import LightScene from '../models/LightScene';
-import SceneLight from '../models/SceneLight';
+import SceneLight from '../models/SceneLight'
 
 export class ClientStore {
   public api: API;
@@ -170,7 +170,7 @@ export class ClientStore {
 export default ClientStore;
 
 class API {
-  private apiUrl: string = 'http://localhost:5000';
+  private apiUrl: string = 'https://light-manager-client.herokuapp.com/api';
   private headers = {
     'Accept': 'application/json',
     'Content-Type': 'application/json'
