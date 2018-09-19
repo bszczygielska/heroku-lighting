@@ -102,6 +102,9 @@ try {
     },
   });
 
+
+  //test
+
   const lightSceneSchema = mongoose.Schema({
     name: {
       type: String,
