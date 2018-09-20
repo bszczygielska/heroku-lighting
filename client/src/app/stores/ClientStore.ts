@@ -21,6 +21,7 @@ export class ClientStore {
 
   public async fetchLights() {
     const response = await this.api.get('/lights');
+    console.log(response)
     let sortedLightBulbs = response
       .map((light: any) => new LightBulb(light.name, light._id))
       .sort((a: LightBulb, b: LightBulb) => a.name.split('.').length - b.name.split('.').length);

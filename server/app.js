@@ -178,8 +178,8 @@ try {
 
   app.get('/api/lightScenes', async function(req, res, next) {
     try {
-      const lightScenes = await LightScene.find();
-      res.status(200).json(lightScenes);
+      const scenes = await LightScene.find();
+      res.status(200).json(scenes);
     } catch (exception) {
       next(exception)
     }

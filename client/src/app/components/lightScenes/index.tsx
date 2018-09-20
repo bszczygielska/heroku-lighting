@@ -18,8 +18,8 @@ interface ILightScenesProps {
 export class LightScenes extends React.Component<ILightScenesProps, any> {
 
   state = {
-    sceneToDelete: {} as LightScene,
-    sceneToEdit: {} as LightScene,
+    sceneToDelete: null as any,
+    sceneToEdit: null as any,
   };
 
   componentDidMount() {
@@ -81,7 +81,7 @@ export class LightScenes extends React.Component<ILightScenesProps, any> {
              visible={!!this.state.sceneToDelete}
              onOk={() => this.handleDelete()}
              onCancel={() => this.handleCancel()}>
-        Are you sure you want to delete scene {this.state.sceneToDelete.name.toUpperCase()}
+        Are you sure you want to delete scene {this.state.sceneToDelete && this.state.sceneToDelete.name.toUpperCase()}
       </Modal>
     </div>
   }
