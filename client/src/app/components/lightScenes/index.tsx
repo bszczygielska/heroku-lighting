@@ -33,12 +33,12 @@ export class LightScenes extends React.Component<ILightScenesProps, any> {
   }
 
   handleCancel() {
-    this.setState({ showModal: false })
+    this.setState({ 'sceneToDelete': null, 'sceneToEdit': null })
   }
 
   handleEditClick(scene: LightScene) {
     this.props.clientStore.setSceneToEdit(scene);
-    this.setState({sceneToEdit: scene})
+    this.setState({ sceneToEdit: scene })
   }
 
   handleDeleteClick(scene: LightScene) {
@@ -53,27 +53,27 @@ export class LightScenes extends React.Component<ILightScenesProps, any> {
       <Card title={'Your light scenes'} bordered={false}>
         <Row gutter={16}>
           <Col span={12}>
-      <List
-        header={<div>Choose light scene to configure</div>}
-        bordered
-        dataSource={lightScenes}
-        pagination={{ pageSize: 10 }}
-        renderItem={(scene: LightScene) => (
+            <List
+              header={<div>Choose light scene to configure</div>}
+              bordered
+              dataSource={lightScenes}
+              pagination={{ pageSize: 10 }}
+              renderItem={(scene: LightScene) => (
 
-          <List.Item actions={[
-            <Icon type="plus-circle-o" onClick={() => this.handleEditClick(scene)}/>,
-            <Icon type="minus-circle-o" onClick={() => this.handleDeleteClick(scene)}/>,
-          ]}>
+                <List.Item actions={[
+                  <Icon type="plus-circle-o" onClick={() => this.handleEditClick(scene)}/>,
+                  <Icon type="minus-circle-o" onClick={() => this.handleDeleteClick(scene)}/>,
+                ]}>
 
-            <List.Item.Meta
-              title={scene.name}
-              description={scene.sceneLights.map(l => l.name).join(', ')}/>
+                  <List.Item.Meta
+                    title={scene.name}
+                    description={scene.sceneLights.map(l => l.name).join(', ')}/>
 
 
-          </List.Item>)}/>
+                </List.Item>)}/>
           </Col>
-          <Col span = {12}>
-            <LightSceneEdit { ...this.props } sceneToEdit={this.state.sceneToEdit}/>
+          <Col span={12}>
+            <LightSceneEdit {...this.props} sceneToEdit={this.state.sceneToEdit}/>
           </Col>
         </Row>
       </Card>
@@ -81,7 +81,8 @@ export class LightScenes extends React.Component<ILightScenesProps, any> {
              visible={!!this.state.sceneToDelete}
              onOk={() => this.handleDelete()}
              onCancel={() => this.handleCancel()}>
-        Are you sure you want to delete scene {this.state.sceneToDelete && this.state.sceneToDelete.name.toUpperCase()}
+        Are you sure you want to delete scene
+        {this.state.sceneToDelete && this.state.sceneToDelete.name.toUpperCase()}
       </Modal>
     </div>
   }
