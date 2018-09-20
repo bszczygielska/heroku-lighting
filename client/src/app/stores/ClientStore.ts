@@ -21,16 +21,17 @@ export class ClientStore {
 
   public async fetchLights() {
     const response = await this.api.get('/lights');
-    console.log(response)
-    let sortedLightBulbs = response
-      .map((light: any) => new LightBulb(light.name, light._id))
-      .sort((a: LightBulb, b: LightBulb) => a.name.split('.').length - b.name.split('.').length);
-    this.setValue('lightBulbs', sortedLightBulbs);
+    if (response && !response.error) {
+      let sortedLightBulbs = response
+        .map((light: any) => new LightBulb(light.name, light._id))
+        .sort((a: LightBulb, b: LightBulb) => a.name.split('.').length - b.name.split('.').length);
+      this.setValue('lightBulbs', sortedLightBulbs);
+    }
   }
 
   public async fetchScenes() {
     const response = await this.api.get('/lightScenes');
-    if (response.status === 200) {
+    if (response && !response.error) {
       this.setValue('lightScenes', response.map((scene: LightScene) => new LightScene(scene.name, scene.sceneLights, scene._id)));
     }
   }
@@ -39,7 +40,7 @@ export class ClientStore {
     let newName = this.combineNameForNewLight(lightName);
     let newLight = new LightBulb(newName);
     const response = await this.addLight(newLight);
-    if (response.status === 200) {
+    if (response && !response.error) {
       this.addLightToStore(response);
     }
     this.setValue('forNewLight', null);
@@ -49,7 +50,7 @@ export class ClientStore {
     let newName = this.combineNameForNewRoom(roomName, lightName);
     let newLight = new LightBulb(newName);
     const response = await this.addLight(newLight);
-    if (response.status === 200) {
+    if (response && !response.error) {
       this.addLightToStore(response)
     }
     this.setValue('forNewRoom', null);
@@ -102,7 +103,7 @@ export class ClientStore {
 
   public async onDeleteLight(light: LightBulb) {
     const response = await this.deleteLight(light);
-    if (response.status === 200) {
+    if (response && !response.error) {
       this.setValue('lightBulbs', this.lightBulbs.filter(lights => lights !== light));
     }
     else {
@@ -134,7 +135,7 @@ export class ClientStore {
   public async addLightScene(sceneName: string) {
     const newScene = new LightScene(sceneName, this.lightsToScene);
     let response = await this.api.post('/lightScenes', newScene);
-    if (response.status === 200) {
+    if (response && !response.error) {
       this.setValue('lightScenes', this.lightScenes.concat(newScene));
       this.setValue('lightsToScene', []);
       this.setValue('sceneName', '');
@@ -143,7 +144,7 @@ export class ClientStore {
 
   public async onDeleteScene(scene: LightScene) {
     const response = await this.api.deleteOne(`/lightScenes/${scene._id}`);
-    if (response.status === 200) {
+    if (response && !response.error) {
       this.setValue('lightScenes', this.lightScenes.filter(s => s !== scene));
     }
   }
@@ -151,7 +152,7 @@ export class ClientStore {
   public async updateLightScene(sceneName: string, scene: LightScene) {
     const updatedScene = new LightScene(sceneName, this.lightsToScene);
     let response = await this.api.put(`/lightScenes/${scene._id}`, updatedScene);
-    if (response.status === 200) {
+    if (response && !response.error) {
       scene.name = sceneName;
       this.setValue('lightsToScene', []);
       this.setValue('sceneName', '');
@@ -161,7 +162,7 @@ export class ClientStore {
   public async toggleScene(scene: LightScene) {
     let stateToSet = !scene.state;
     let response = await this.api.put(`/lightScenes/${scene._id}`, { state: stateToSet });
-    if (response.status === 200) {
+    if (response && !response.error) {
       scene.state = stateToSet;
     }
   }
