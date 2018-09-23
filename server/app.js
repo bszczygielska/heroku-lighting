@@ -3,17 +3,20 @@ const app = express();
 const http = require('http').Server(app);
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const io = require('socket.io')(http, {
+  path: '/socket'
+});
 
 const port = process.env.PORT || 5000;
 
 try {
   app.use(express.static('../client/build'));
 
-  process.on('uncaughtException', (function(error) {
+  process.on('uncaughtException', (function (error) {
     console.error(error)
   }));
 
-  process.on('error', (function(error) {
+  process.on('error', (function (error) {
     console.error(error)
   }));
 
@@ -33,7 +36,7 @@ try {
 
   const db = mongoose.connection;
   db.on('error', console.error.bind(console, 'connection error:'));
-  db.once('open', function() {
+  db.once('open', function () {
     console.log('mongoose connected!!');
   });
 
@@ -71,11 +74,13 @@ try {
     },
   });
 
-  lightBulbSchema.methods.speak = function() {
+  lightBulbSchema.methods.speak = function () {
     console.log(`Hi Im your new light bulb ${this.name}, shall I lighten?`)
   };
 
   const LightBulb = mongoose.model('LightBulb', lightBulbSchema);
+
+  socket.emit('toSimulation', LightBulb.find().then(light => light.toJSON()));
 
   const sceneLightSchema = mongoose.Schema({
     _id: {
@@ -125,19 +130,55 @@ try {
 
   const LightScene = mongoose.model('LightScene', lightSceneSchema);
 
+  /**
+   * Establishing io connection
+   */
+
+  let socketHandler = null;
+
+  class SocketHandler {
+    constructor(socket) {
+      this.socket = socket;
+      this.handleInitial();
+    }
+
+    handleInitial() {
+      this.socket.emit('hiFromServer', 'You are connected');
+      const initialData = LightBulb.find().toJSON();
+      io.emit('toSimulation', initialData);
+    }
+
+    handleFromClient(data) {
+      console.log('A client ' + this.socket.id + ' is speaking to me!: ' + data);
+      io.emit('toSimulation', data);
+    }
+
+    handleFromSimulation(data) {
+      this.socket.emit('toSimulation', data)
+    }
+  }
+
+  io.on('connection', (socket) => socketHandler = new SocketHandler(socket));
+
+  io.on('disconnect', function (data) {
+    console.log('user disconnected', data);
+  });
+
+  /**
+   *  Routes
+   */
+
   app.use(bodyParser.json());
 
-  app.all('/*', function(req, res, next) {
+  app.all('/*', function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE");
     res.header("Access-Control-Allow-Headers", "X-Requested-With, Content-Type, Accept");
     next();
   });
 
-  /**
-   *  Routes
-   */
-  app.get('/api/lights', async function(req, res, next) {
+
+  app.get('/api/lights', async function (req, res, next) {
     try {
       const lights = await LightBulb.find();
       res.status(200).json(lights);
@@ -146,37 +187,37 @@ try {
     }
   });
 
-  app.post('/api/lights', async function(req, res, next) {
+  app.post('/api/lights', async function (req, res, next) {
     try {
       let createdBulb = new LightBulb(req.body);
       await createdBulb.save();
-      res.status(200).json({ message: 'light created successfully', light: createdBulb });
+      res.status(200).json({message: 'light created successfully', light: createdBulb});
       createdBulb.speak();
-    } catch(exception) {
+    } catch (exception) {
       next(exception);
     }
   });
 
-  app.put('/api/lights/:lightId', async function(req, res, next) {
+  app.put('/api/lights/:lightId', async function (req, res, next) {
     try {
-      let updatedBulb = await LightBulb.updateOne({ _id: req.params.lightId }, req.body);
+      let updatedBulb = await LightBulb.updateOne({_id: req.params.lightId}, req.body);
       updatedBulb.save();
-       res.status(200).json({ message: 'light updated succesfully', light: updatedBulb })
+      res.status(200).json({message: 'light updated succesfully', light: updatedBulb})
     } catch (exception) {
       next(exception)
     }
   });
 
-  app.delete('/api/lights/:lightId', async function(req, res, next) {
+  app.delete('/api/lights/:lightId', async function (req, res, next) {
     try {
-      await LightBulb.deleteOne({ _id: req.params.lightId });
-      res.json({ message: 'light deleted successfully' })
+      await LightBulb.deleteOne({_id: req.params.lightId});
+      res.json({message: 'light deleted successfully'})
     } catch (exception) {
       next(exception)
     }
   });
 
-  app.get('/api/lightScenes', async function(req, res, next) {
+  app.get('/api/lightScenes', async function (req, res, next) {
     try {
       const scenes = await LightScene.find();
       res.status(200).json(scenes);
@@ -185,17 +226,17 @@ try {
     }
   });
 
-  app.post('/api/lightScenes', async function(req, res, next) {
+  app.post('/api/lightScenes', async function (req, res, next) {
     try {
       let lightScene = new LightScene(req.body);
       await lightScene.save();
-      res.json({ message: 'lightScene created successfully', scene: lightScene });
+      res.json({message: 'lightScene created successfully', scene: lightScene});
     } catch (exception) {
       next(exception)
     }
   });
 
-  app.put('/api/lightScenes/:lightSceneId', async function(req, res, next) {
+  app.put('/api/lightScenes/:lightSceneId', async function (req, res, next) {
     try {
       const lightScene = await LightScene.findById(req.params.lightSceneId);
       lightScene.set(req.body);
@@ -206,23 +247,48 @@ try {
     }
   });
 
-  app.delete('/api/lightScenes/:lightSceneId', async function(req, res, next) {
+  app.delete('/api/lightScenes/:lightSceneId', async function (req, res, next) {
     try {
-      await LightScene.deleteOne({ _id: req.params.lightSceneId });
-      res.status(200).json({ message: 'lightScene deleted successfully' });
+      await LightScene.deleteOne({_id: req.params.lightSceneId});
+      res.status(200).json({message: 'lightScene deleted successfully'});
+    } catch (exception) {
+      next(exception)
+    }
+  });
+
+  app.post('/api/lightScenes/set/:lightSceneId', async function (req, res, next) {
+    try {
+      const lightScene = await LightScene.findById(req.params.lightSceneId);
+      const {doTurnOn} = req.body;
+      const lightsToSet = lightScene.sceneLights.map(light => LightBulb.update({_id: light._id}, {
+        $set: {
+          state: doTurnOn,
+          hue: doTurnOn ? light.hue : 0,
+          saturation: doTurnOn ? light.saturation : 0,
+          lightness: doTurnOn ? light.lightness : 0,
+          hex: doTurnOn ? light.hex : '',
+        }
+      }));
+
+      await Promise.all(lightsToSet);
+      res.status(200).json({message: 'lightScene set successfully'});
+
+      socketHandler.handleFromClient(LightBulb.find().toJSON())
+
     } catch (exception) {
       next(exception)
     }
   });
 
   app.get('*', (req, res) => {
-    res.sendFile('client/build/index.html', { root: '../'});
+    res.sendFile('client/build/index.html', {root: '../'});
   });
 
   app.use(function errorHandler(err, req, res, next) {
     console.error(err.stack);
     res.status(500).send({error: err})
   })
+
 
 } catch (e) {
   console.warn(e.message)

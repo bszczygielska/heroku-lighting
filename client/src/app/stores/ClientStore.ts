@@ -2,13 +2,17 @@ import LightBulb from '../models/LightBulb';
 import { action, observable } from 'mobx';
 import * as lodash from 'lodash';
 import LightScene from '../models/LightScene';
-import SceneLight from '../models/SceneLight'
+import SceneLight from '../models/SceneLight';
+
+const apiUrl: string = 'https://light-manager-client.herokuapp.com/socket';
 
 export class ClientStore {
   public api: API;
+  public socket: any;
 
   constructor() {
     this.api = new API();
+    this.socket = io(apiUrl);
   }
 
   @observable public lightBulbs: LightBulb[] = [];
@@ -161,7 +165,7 @@ export class ClientStore {
 
   public async toggleScene(scene: LightScene) {
     let stateToSet = !scene.state;
-    let response = await this.api.put(`/lightScenes/${scene._id}`, { state: stateToSet });
+    let response = await this.api.put(`/lightScenes/set/${scene._id}`, { doTurnOn: stateToSet });
     if (response && !response.error) {
       scene.state = stateToSet;
     }
@@ -171,14 +175,13 @@ export class ClientStore {
 export default ClientStore;
 
 class API {
-  private apiUrl: string = 'https://light-manager-client.herokuapp.com/api';
   private headers = {
     'Accept': 'application/json',
     'Content-Type': 'application/json'
   };
 
   public async get(path: string) {
-    path = `${this.apiUrl}${path}`;
+    path = `${apiUrl}${path}`;
     const options = {
       method: 'GET',
       headers: this.headers,
@@ -187,7 +190,7 @@ class API {
   }
 
   public async post(path: any, data: any) {
-    path = `${this.apiUrl}${path}`;
+    path = `${apiUrl}${path}`;
     const options = {
       method: 'POST',
       headers: this.headers,
@@ -197,7 +200,7 @@ class API {
   }
 
   public async put(path: any, data: any) {
-    path = `${this.apiUrl}${path}`;
+    path = `${apiUrl}${path}`;
     const options = {
       method: 'PUT',
       headers: this.headers,
@@ -207,7 +210,7 @@ class API {
   }
 
   public async deleteOne(path: any, data?: any) {
-    path = `${this.apiUrl}${path}`;
+    path = `${apiUrl}${path}`;
     const options = {
       method: 'DELETE',
       headers: this.headers,

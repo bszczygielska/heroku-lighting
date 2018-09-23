@@ -1,10 +1,9 @@
-import React, { Component } from "react";
+import React from "react";
 import * as io from 'socket.io-client';
 import 'antd/dist/antd.css';
+const socket = io('https://light-manager-client.herokuapp.com/socket');
 
-const socket = io('http://localhost:5000');
-
-class App extends Component {
+class App extends React.Component {
   constructor() {
     super();
     this.state = {
@@ -14,7 +13,6 @@ class App extends Component {
 
   componentWillMount()  {
     socket.on('toSimulation', message => {
-      console.log(message);
       this.setState({ text: message });
     })
   }
