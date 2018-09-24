@@ -1,11 +1,9 @@
 const express = require('express');
 const app = express();
 const http = require('http').Server(app);
+const io = require('socket.io')(http);
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-const io = require('socket.io')(http, {
-  path: '/socket'
-});
 
 const port = process.env.PORT || 5000;
 
@@ -132,31 +130,19 @@ try {
    * Establishing io connection
    */
 
-  let socketHandler = null;
 
-  class SocketHandler {
-    constructor(socket) {
-      this.socket = socket;
-      this.handleInitial();
-    }
+  io.on('connection', socket => {
+    console.log('a user connected, socket id: ', socket.id);
+    const initialData = LightBulb.find().toJSON();
 
-    handleInitial() {
-      this.socket.emit('hiFromServer', 'You are connected');
-      const initialData = LightBulb.find().toJSON();
-      io.emit('toSimulation', initialData);
-    }
+    socket.emit('toSimulation', initialData);
+    socket.emit('hiFromServer', 'Welcome onboard');
 
-    handleFromClient(data) {
-      console.log('A client ' + this.socket.id + ' is speaking to me!: ' + data);
+    socket.on('fromSimulation', function (data) {
+      console.log('A client ' + socket.id + ' is speaking to me!: ' + data);
       io.emit('toSimulation', data);
-    }
-
-    handleFromSimulation(data) {
-      this.socket.emit('toSimulation', data)
-    }
-  }
-
-  io.on('connection', (socket) => socketHandler = new SocketHandler(socket));
+    });
+  });
 
   io.on('disconnect', function (data) {
     console.log('user disconnected', data);
@@ -190,6 +176,7 @@ try {
       let createdBulb = new LightBulb(req.body);
       await createdBulb.save();
       res.status(200).json({message: 'light created successfully', light: createdBulb});
+      io.emit('toSimulation', LightBulb.find().toJSON());
       createdBulb.speak();
     } catch (exception) {
       next(exception);
@@ -209,7 +196,8 @@ try {
   app.delete('/api/lights/:lightId', async function (req, res, next) {
     try {
       await LightBulb.deleteOne({_id: req.params.lightId});
-      res.json({message: 'light deleted successfully'})
+      res.json({message: 'light deleted successfully'});
+      io.emit('toSimulation', LightBulb.find().toJSON());
     } catch (exception) {
       next(exception)
     }
@@ -271,7 +259,7 @@ try {
       await Promise.all(lightsToSet);
       res.status(200).json({message: 'lightScene set successfully'});
 
-      socketHandler.handleFromClient(LightBulb.find().toJSON())
+      io.emit('toSimulation', LightBulb.find().toJSON());
 
     } catch (exception) {
       next(exception)
@@ -288,6 +276,8 @@ try {
   })
 
 
-} catch (e) {
+}
+catch
+  (e) {
   console.warn(e.message)
 }
