@@ -1,9 +1,9 @@
 const express = require('express');
 const app = express();
 const http = require('http').Server(app);
-const io = require('socket.io')(http);
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const socketIO = require('socket.io');
 
 const port = process.env.PORT || 5000;
 
@@ -22,6 +22,7 @@ try {
     console.log('io server listening on: ' + port);
   });
 
+  const io = socketIO(http);
   /**
    * Connecting with db
    */
@@ -129,7 +130,6 @@ try {
   /**
    * Establishing io connection
    */
-
 
   io.on('connection', socket => {
     console.log('a user connected, socket id: ', socket.id);
