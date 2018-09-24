@@ -3,6 +3,7 @@ import { action, observable } from 'mobx';
 import * as lodash from 'lodash';
 import LightScene from '../models/LightScene';
 import SceneLight from '../models/SceneLight';
+import * as io from 'socket.io-client';
 
 const apiUrl: string = 'https://light-manager-client.herokuapp.com/socket';
 
