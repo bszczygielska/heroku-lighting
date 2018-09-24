@@ -80,8 +80,6 @@ try {
 
   const LightBulb = mongoose.model('LightBulb', lightBulbSchema);
 
-  socket.emit('toSimulation', LightBulb.find().then(light => light.toJSON()));
-
   const sceneLightSchema = mongoose.Schema({
     _id: {
       type: String,
