@@ -135,8 +135,9 @@ try {
   io.on('connection', async socket => {
     console.log('a user connected, socket id: ', socket.id);
     const initialData = await LightBulb.find();
+    console.log(initialData);
 
-    socket.emit('toSimulation', initialData.json());
+    socket.emit('toSimulation', initialData);
     socket.emit('hiFromServer', 'Welcome onboard');
 
     socket.on('fromSimulation', function (data) {
@@ -262,8 +263,12 @@ try {
       await Promise.all(lightsToSet);
 
       const lights = await LightBulb.find();
-      io.emit('toSimulation', lights.json());
+      console.log(lights);
+
+      io.emit('toSimulation', lights);
+
       res.status(200).json({message: 'lightScene set successfully'});
+
     } catch (exception) {
       next(exception)
     }

@@ -9,12 +9,11 @@ const apiUrl: string = 'https://light-manager-client.herokuapp.com/api';
 
 export class ClientStore {
   public api: API;
-  public socket: any;
 
   constructor() {
     this.api = new API();
-    this.socket = io(apiUrl.replace('api', ''));
-    this.socket.on('hiFromServer', (message: any) => {
+    const socket = io('https://light-manager-client.herokuapp.com');
+    socket.on('hiFromServer', (message: any) => {
       console.log('Server says: ' + message);
     });
   }
