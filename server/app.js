@@ -176,8 +176,9 @@ try {
     try {
       let createdBulb = new LightBulb(req.body);
       await createdBulb.save();
+      const lights = await LightBulb.find();
+      io.emit('toSimulation', lights.json());
       res.status(200).json({message: 'light created successfully', light: createdBulb});
-      io.emit('toSimulation', LightBulb.find().toJSON());
       createdBulb.speak();
     } catch (exception) {
       next(exception);
@@ -197,8 +198,9 @@ try {
   app.delete('/api/lights/:lightId', async function (req, res, next) {
     try {
       await LightBulb.deleteOne({_id: req.params.lightId});
+      const lights = await LightBulb.find();
+      io.emit('toSimulation', lights.json());
       res.json({message: 'light deleted successfully'});
-      io.emit('toSimulation', LightBulb.find().toJSON());
     } catch (exception) {
       next(exception)
     }
@@ -258,10 +260,10 @@ try {
       }));
 
       await Promise.all(lightsToSet);
+
+      const lights = await LightBulb.find();
+      io.emit('toSimulation', lights.json());
       res.status(200).json({message: 'lightScene set successfully'});
-
-      io.emit('toSimulation', LightBulb.find().toJSON());
-
     } catch (exception) {
       next(exception)
     }
