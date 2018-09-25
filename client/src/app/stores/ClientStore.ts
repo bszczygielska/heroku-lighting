@@ -5,7 +5,7 @@ import LightScene from '../models/LightScene';
 import SceneLight from '../models/SceneLight';
 import * as io from 'socket.io-client';
 
-const apiUrl: string = 'https://light-manager-client.herokuapp.com';
+const apiUrl: string = 'https://light-manager-client.herokuapp.com/api';
 
 export class ClientStore {
   public api: API;
@@ -13,7 +13,7 @@ export class ClientStore {
 
   constructor() {
     this.api = new API();
-    this.socket = io(apiUrl);
+    this.socket = io(apiUrl.replace('api', ''));
     this.socket.on('hiFromServer', (message: any) => {
       console.log('Server says: ' + message);
     });
