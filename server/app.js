@@ -132,11 +132,11 @@ try {
    * Establishing io connection
    */
 
-  io.on('connection', socket => {
+  io.on('connection', async socket => {
     console.log('a user connected, socket id: ', socket.id);
-    const initialData = LightBulb.find().toJSON();
+    const initialData = await LightBulb.find();
 
-    socket.emit('toSimulation', initialData);
+    socket.emit('toSimulation', initialData.json());
     socket.emit('hiFromServer', 'Welcome onboard');
 
     socket.on('fromSimulation', function (data) {
