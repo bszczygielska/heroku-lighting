@@ -25,7 +25,6 @@ try {
     console.log('io server listening on: ' + port);
   });
 
-  const io = new SocketServer({ server: http });
   /**
    * Connecting with db
    */
