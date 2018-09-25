@@ -135,8 +135,6 @@ try {
   io.on('connection', async socket => {
     console.log('a user connected, socket id: ', socket.id);
     const initialData = await LightBulb.find();
-    console.log(initialData);
-
     socket.emit('toSimulation', initialData);
     socket.emit('hiFromServer', 'Welcome onboard');
 
@@ -178,7 +176,7 @@ try {
       let createdBulb = new LightBulb(req.body);
       await createdBulb.save();
       const lights = await LightBulb.find();
-      io.emit('toSimulation', lights.json());
+      io.emit('toSimulation', lights);
       res.status(200).json({message: 'light created successfully', light: createdBulb});
       createdBulb.speak();
     } catch (exception) {
@@ -200,7 +198,7 @@ try {
     try {
       await LightBulb.deleteOne({_id: req.params.lightId});
       const lights = await LightBulb.find();
-      io.emit('toSimulation', lights.json());
+      io.emit('toSimulation', lights);
       res.json({message: 'light deleted successfully'});
     } catch (exception) {
       next(exception)
