@@ -4,6 +4,7 @@ const http = require('http').Server(app);
 const mongoose = require('mongoose');
 const SocketServer = require('ws').Server;
 const bodyParser = require('body-parser');
+const socketIO = require('socket.io');
 
 const port = process.env.PORT || 5000;
 
@@ -18,11 +19,13 @@ try {
     console.error(error)
   }));
 
+  const io = socketIO(http);
+
   http.listen(port, () => {
     console.log('io server listening on: ' + port);
   });
 
-  const wss = new SocketServer({ server: http });
+  const io = new SocketServer({ server: http });
   /**
    * Connecting with db
    */
@@ -131,7 +134,7 @@ try {
    * Establishing io connection
    */
 
-  wss.on('connection', socket => {
+  io.on('connection', socket => {
     console.log('a user connected, socket id: ', socket.id);
     const initialData = LightBulb.find().toJSON();
 
@@ -140,11 +143,11 @@ try {
 
     socket.on('fromSimulation', function (data) {
       console.log('A client ' + socket.id + ' is speaking to me!: ' + data);
-      wss.emit('toSimulation', data);
+      io.emit('toSimulation', data);
     });
   });
 
-  wss.on('disconnect', function (data) {
+  io.on('disconnect', function (data) {
     console.log('user disconnected', data);
   });
 
@@ -176,7 +179,7 @@ try {
       let createdBulb = new LightBulb(req.body);
       await createdBulb.save();
       res.status(200).json({message: 'light created successfully', light: createdBulb});
-      wss.emit('toSimulation', LightBulb.find().toJSON());
+      io.emit('toSimulation', LightBulb.find().toJSON());
       createdBulb.speak();
     } catch (exception) {
       next(exception);
@@ -197,7 +200,7 @@ try {
     try {
       await LightBulb.deleteOne({_id: req.params.lightId});
       res.json({message: 'light deleted successfully'});
-      wss.emit('toSimulation', LightBulb.find().toJSON());
+      io.emit('toSimulation', LightBulb.find().toJSON());
     } catch (exception) {
       next(exception)
     }
@@ -259,7 +262,7 @@ try {
       await Promise.all(lightsToSet);
       res.status(200).json({message: 'lightScene set successfully'});
 
-      wss.emit('toSimulation', LightBulb.find().toJSON());
+      io.emit('toSimulation', LightBulb.find().toJSON());
 
     } catch (exception) {
       next(exception)

@@ -3,10 +3,9 @@ import { action, observable } from 'mobx';
 import * as lodash from 'lodash';
 import LightScene from '../models/LightScene';
 import SceneLight from '../models/SceneLight';
-const WebSocket = require('ws');
+import * as io from 'socket.io-client';
 
 const apiUrl: string = 'https://light-manager-client.herokuapp.com';
-const socketUrl: string = 'wss://light-manager-client.herokuapp.com';
 
 export class ClientStore {
   public api: API;
@@ -14,7 +13,7 @@ export class ClientStore {
 
   constructor() {
     this.api = new API();
-    this.socket = new WebSocket(socketUrl);
+    this.socket = io(apiUrl);
     this.socket.on('hiFromServer', (message: any) => {
       console.log('Server says: ' + message);
     });
