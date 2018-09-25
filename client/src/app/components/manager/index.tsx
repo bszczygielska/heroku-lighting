@@ -22,8 +22,6 @@ export class LightManager extends React.Component<ILightScenesProps, any> {
   }
 
   handleButtonClick(scene: LightScene) {
-    console.log(scene)
-    console.log('wysylam')
     this.props.clientStore.toggleScene(scene);
   }
 
