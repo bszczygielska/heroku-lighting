@@ -3,7 +3,7 @@ import SceneLight from "./SceneLight";
 
 export class LightScene {
 
-  constructor(name: string, sceneLights: SceneLight[], _id?: string, state?: boolean = false) {
+  constructor(name: string, sceneLights: SceneLight[], _id?: string, state: boolean = false) {
     this.name = name;
     this.sceneLights = sceneLights;
     if(_id) {
