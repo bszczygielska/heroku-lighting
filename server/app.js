@@ -8,6 +8,7 @@ const socketIO = require('socket.io');
 const port = process.env.PORT || 5000;
 
 try {
+
   app.use(express.static('../client/build'));
 
   process.on('uncaughtException', (function (error) {
@@ -128,11 +129,26 @@ try {
     console.log('a user connected, socket id: ', socket.id);
     const initialData = await LightBulb.find();
     socket.emit('toSimulation', initialData);
+
     socket.emit('hiFromServer', 'Welcome onboard');
 
-    socket.on('fromSimulation', function (data) {
-      console.log('A client ' + socket.id + ' is speaking to me!: ' + data);
-      io.emit('toSimulation', data);
+    socket.on('fromSimulation', async function (data) {
+      const wasTurnedOn = data.state;
+      const optionsToSet = {
+        state : !wasTurnedOn,
+        hue : 0,
+        saturition : 0,
+        lightness : 100,
+        hex: ''
+      }
+      try {
+        let updatedBulb = await LightBulb.updateOne({_id: data._id}, optionsToSet);
+        updatedBulb.save();
+        const updatedData = await LightBulb.find();
+        io.emit('toSimulation', updatedData);
+      } catch (err) {
+        console.error(err.stack);
+      }
     });
   });
 
