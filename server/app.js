@@ -54,22 +54,18 @@ try {
     },
     hue: {
       type: Number,
-      required: false,
       default: 0,
     },
     saturation: {
       type: Number,
-      required: false,
       default: 0,
     },
     lightness: {
       type: Number,
-      required: false,
       default: 100,
     },
     hex: {
       type: String,
-      required: false,
       default: '',
     },
   });
@@ -156,8 +152,7 @@ try {
     res.header("Access-Control-Allow-Headers", "X-Requested-With, Content-Type, Accept");
     next();
   });
-
-
+  
   app.get('/api/lights', async function (req, res, next) {
     try {
       const lights = await LightBulb.find();
