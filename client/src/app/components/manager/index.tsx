@@ -14,11 +14,8 @@ interface ILightScenesProps {
 @observer
 export class LightManager extends React.Component<ILightScenesProps, any> {
 
-  componentWillMount() {
-  }
-
   componentDidMount() {
-
+    this.props.clientStore.fetchScenes()
   }
 
   handleButtonClick(scene: LightScene) {

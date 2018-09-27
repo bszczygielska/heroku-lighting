@@ -3,12 +3,14 @@ import SceneLight from "./SceneLight";
 
 export class LightScene {
 
-  constructor(name: string, sceneLights: SceneLight[], _id?: string) {
+  constructor(name: string, sceneLights: SceneLight[], _id?: string, state?: boolean) {
     this.name = name;
     this.sceneLights = sceneLights;
     if(_id) {
       this._id = _id
+      this.state = state
     }
+
   }
 
   @observable public name: string;

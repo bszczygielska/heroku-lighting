@@ -39,7 +39,8 @@ export class ClientStore {
   public async fetchScenes() {
     const response = await this.api.get('/lightScenes');
     if (response && !response.error) {
-      this.setValue('lightScenes', response.map((scene: LightScene) => new LightScene(scene.name, scene.sceneLights, scene._id)));
+      this.setValue('lightScenes', response.map(
+        (scene: LightScene) => new LightScene(scene.name, scene.sceneLights, scene._id, scene.state)));
     }
   }
 
@@ -177,22 +178,22 @@ export class ClientStore {
 
 export default ClientStore;
 
-class API {
-  private headers = {
-    'Accept': 'application/json',
-    'Content-Type': 'application/json'
-  };
-
-  public async get(path: string) {
-    path = `${apiUrl}${path}`;
-    const options = {
-      method: 'GET',
-      headers: this.headers,
+  class API {
+    private headers = {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
     };
-    return await fetch(path, options as RequestInit).then(data => data.json());
-  }
 
-  public async post(path: any, data: any) {
+    public async get(path: string) {
+      path = `${apiUrl}${path}`;
+      const options = {
+        method: 'GET',
+        headers: this.headers,
+      };
+      return await fetch(path, options as RequestInit).then(data => data.json());
+    }
+
+  public async post(path: string, data: object) {
     path = `${apiUrl}${path}`;
     const options = {
       method: 'POST',
@@ -202,7 +203,7 @@ class API {
     return await fetch(path, options as RequestInit).then(data => data.json());
   }
 
-  public async put(path: any, data: any) {
+  public async put(path: string, data: object) {
     path = `${apiUrl}${path}`;
     const options = {
       method: 'PUT',
@@ -212,7 +213,7 @@ class API {
     return await fetch(path, options as RequestInit).then(data => data.json());
   }
 
-  public async deleteOne(path: any, data?: any) {
+  public async deleteOne(path: string, data?: object) {
     path = `${apiUrl}${path}`;
     const options = {
       method: 'DELETE',
@@ -221,5 +222,4 @@ class API {
     };
     return await fetch(path, options as RequestInit).then(data => data.json());
   }
-
 }
