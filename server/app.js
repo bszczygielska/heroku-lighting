@@ -135,17 +135,15 @@ try {
     socket.on('fromSimulation', async function (data) {
       const wasTurnedOn = data.state;
       const optionsToSet = {
-        state : !wasTurnedOn,
-        hue : 0,
-        saturition : 0,
-        lightness : 100,
+        state: !wasTurnedOn,
+        hue: 0,
+        saturition: 0,
+        lightness: 100,
         hex: ''
       }
       try {
         let updatedBulb = await LightBulb.updateOne({_id: data._id}, optionsToSet);
         updatedBulb.save();
-        const updatedData = await LightBulb.find();
-        io.emit('toSimulation', updatedData);
       } catch (err) {
         console.error(err.stack);
       }
@@ -168,7 +166,7 @@ try {
     res.header("Access-Control-Allow-Headers", "X-Requested-With, Content-Type, Accept");
     next();
   });
-  
+
   app.get('/api/lights', async function (req, res, next) {
     try {
       const lights = await LightBulb.find();

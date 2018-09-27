@@ -57,6 +57,7 @@ export class LightBulbsTable extends React.Component<ILightsTableProps, any> {
   renderRoom(name: string, room: object, path: string) {
     const { clientStore } = this.props;
     return <Card
+      style={{ marginBottom: 10 }}
       key={`room_${name}`}
       title={name}
       extra={[<Button onClick={() => this.onNewRoomSpaceHandler(path)}>
