@@ -91,24 +91,20 @@ try {
     },
     hue: {
       type: Number,
-      required: false,
       default: 0,
     },
     saturation: {
       type: Number,
-      required: false,
       default: 0,
     },
     lightness: {
       type: Number,
-      required: false,
       default: 100,
     },
     hex: {
       type: String,
-      required: false,
       default: '',
-    },
+    }
   });
 
   const lightSceneSchema = mongoose.Schema({
