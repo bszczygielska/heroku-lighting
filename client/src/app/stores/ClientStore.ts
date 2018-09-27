@@ -171,7 +171,7 @@ export class ClientStore {
     let stateToSet = !scene.state;
     let response = await this.api.post(`/lightScenes/set/${scene._id}`, { doTurnOn: stateToSet });
     if (response && !response.error) {
-      scene.state = stateToSet;
+      scene.setState(stateToSet);
     }
   }
 }
