@@ -17,7 +17,7 @@ export class LightScene {
   @observable public _id: string;
   @observable public state: boolean;
 
-  setState(stateToSet) {
+  setState(stateToSet: boolean) {
     return this.state = stateToSet;
   }
 
