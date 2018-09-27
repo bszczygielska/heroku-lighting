@@ -133,16 +133,15 @@ try {
     socket.emit('hiFromServer', 'Welcome onboard');
 
     socket.on('fromSimulation', async function (data) {
-      const wasTurnedOn = data.state;
       const optionsToSet = {
-        state: !wasTurnedOn,
+        state: data.state,
         hue: 0,
         saturition: 0,
         lightness: 100,
         hex: ''
-      }
+      };
       try {
-        let updatedBulb = await LightBulb.updateOne({_id: data._id}, optionsToSet);
+        let updatedBulb = await LightBulb.updateOne({_id: data._id}, { $set: optionsToSet });
         updatedBulb.save();
       } catch (err) {
         console.error(err.stack);
