@@ -43,7 +43,7 @@ export class Root extends React.Component<IRootProps, IRootState> {
           <Layout style={{ marginLeft: 200, height: '90%' }}>
             <Modal
               key={'pssw_modal'}
-              title="Insert password to enter this application"
+              title="Insert superpassword to enter this application"
               visible={showModal}
             >
               <Search
